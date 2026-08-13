@@ -24,7 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -322,7 +324,7 @@ overflow-producing arithmetic degrades to <code>⊤</code> (unbounded). String p
 suffix tracking is concat-only; it does not model reordering, reversal, or
 character-level regex constraints. Loop widening deliberately drops
 changing bounds rather than chasing fixpoints.</p>
-<p><strong>Source</strong>: <a href="https://github.com/elicpeter/nyx/tree/master/src/abstract_interp/"><code>src/abstract_interp/</code></a>.</p>
+<p><strong>Source</strong>: <a href="https://github.com/nyx-sec/nyx/tree/master/src/abstract_interp/"><code>src/abstract_interp/</code></a>.</p>
 <hr>
 <h2 id="context-sensitive-analysis"><a class="docs-anchor" href="#context-sensitive-analysis" aria-label="Link to context-sensitive-analysis" data-pagefind-ignore>#</a>Context-sensitive analysis</h2>
 <p><strong>What it does.</strong> Adds k=1 call-site-sensitive taint propagation for
@@ -378,7 +380,7 @@ normal-returning call therefore proves the validating arm. JS/TS
 object-pattern formals (<code>({ column, operator, value }) =&gt; …</code>) seed
 every destructured sibling in the per-parameter probe, so flow through
 any of them counts toward the slot being validated.</p>
-<p><strong>Source</strong>: <a href="https://github.com/elicpeter/nyx/tree/master/src/taint/ssa_transfer/"><code>src/taint/ssa_transfer/</code></a>
+<p><strong>Source</strong>: <a href="https://github.com/nyx-sec/nyx/tree/master/src/taint/ssa_transfer/"><code>src/taint/ssa_transfer/</code></a>
 (<code>ArgTaintSig</code>, <code>InlineCache</code>, <code>inline_analyse_callee</code>,
 <code>propagate_validated_params_to_return</code>).</p>
 <hr>
@@ -419,7 +421,7 @@ chains through <code>*p</code> / <code>p-&gt;field</code> in C/C++ are not track
 direct field case. The points-to set per value is capped at
 <code>--max-pointsto</code> (default 32); when truncation happens, an engine note
 records the precision loss.</p>
-<p><strong>Source</strong>: <a href="https://github.com/elicpeter/nyx/tree/master/src/pointer/"><code>src/pointer/</code></a>.</p>
+<p><strong>Source</strong>: <a href="https://github.com/nyx-sec/nyx/tree/master/src/pointer/"><code>src/pointer/</code></a>.</p>
 <hr>
 <h2 id="hierarchy-fan-out-for-virtual-dispatch"><a class="docs-anchor" href="#hierarchy-fan-out-for-virtual-dispatch" aria-label="Link to hierarchy-fan-out-for-virtual-dispatch" data-pagefind-ignore>#</a>Hierarchy fan-out for virtual dispatch</h2>
 <p><strong>What it does.</strong> Builds a per-language type-hierarchy index in pass 1
@@ -441,8 +443,8 @@ implementers. Languages that use structural / implicit interface
 satisfaction (Go) are deliberately skipped because per-file extraction
 is intractable; those calls fall back to the single-result resolver. The
 extractor covers Java, Rust, TS/JS/TSX, Python, Ruby, PHP, and C++.</p>
-<p><strong>Source</strong>: <a href="https://github.com/elicpeter/nyx/blob/master/src/cfg/hierarchy.rs"><code>src/cfg/hierarchy.rs</code></a>
-and <a href="https://github.com/elicpeter/nyx/blob/master/src/summary/mod.rs"><code>src/summary/mod.rs</code></a>
+<p><strong>Source</strong>: <a href="https://github.com/nyx-sec/nyx/blob/master/src/cfg/hierarchy.rs"><code>src/cfg/hierarchy.rs</code></a>
+and <a href="https://github.com/nyx-sec/nyx/blob/master/src/summary/mod.rs"><code>src/summary/mod.rs</code></a>
 (<code>TypeHierarchyIndex</code>, <code>resolve_callee_widened</code>).</p>
 <hr>
 <h2 id="symbolic-execution"><a class="docs-anchor" href="#symbolic-execution" aria-label="Link to symbolic-execution" data-pagefind-ignore>#</a>Symbolic execution</h2>
@@ -507,7 +509,7 @@ downstream display.</p>
 deeper expressions degrade to <code>Unknown</code> rather than growing unboundedly.
 Sanitizer detection is informational: string-replace sanitizer patterns
 are reported as witness metadata, not used to clear taint.</p>
-<p><strong>Source</strong>: <a href="https://github.com/elicpeter/nyx/tree/master/src/symex/"><code>src/symex/</code></a>.</p>
+<p><strong>Source</strong>: <a href="https://github.com/nyx-sec/nyx/tree/master/src/symex/"><code>src/symex/</code></a>.</p>
 <hr>
 <h2 id="demand-driven-analysis"><a class="docs-anchor" href="#demand-driven-analysis" aria-label="Link to demand-driven-analysis" data-pagefind-ignore>#</a>Demand-driven analysis</h2>
 <p><strong>What it does.</strong> After the forward pass-2 taint analysis finishes, runs a
@@ -581,7 +583,7 @@ direction confirmed the flow.  See
 <code>data_exfil</code> sub-case) and
 <code>taint::backwards::tests::driver_walks_data_exfil_source_to_sink</code> for
 the regression guards.</p>
-<p><strong>Source</strong>: <a href="https://github.com/elicpeter/nyx/blob/master/src/taint/backwards.rs"><code>src/taint/backwards.rs</code></a>.</p>
+<p><strong>Source</strong>: <a href="https://github.com/nyx-sec/nyx/blob/master/src/taint/backwards.rs"><code>src/taint/backwards.rs</code></a>.</p>
 <hr>
 <h2 id="constraint-solving"><a class="docs-anchor" href="#constraint-solving" aria-label="Link to constraint-solving" data-pagefind-ignore>#</a>Constraint solving</h2>
 <p><strong>What it does.</strong> Collects path constraints at each branch in SSA and
@@ -638,7 +640,7 @@ trivially-inconsistent pairs are caught without an SMT solver, but richer
 algebraic unsatisfiability requires the <code>smt</code> feature (Z3). Without <code>smt</code>,
 Nyx ships a lightweight satisfiability check that catches literal
 contradictions but not deeper reasoning.</p>
-<p><strong>Source</strong>: <a href="https://github.com/elicpeter/nyx/tree/master/src/constraint/"><code>src/constraint/</code></a>.</p>
+<p><strong>Source</strong>: <a href="https://github.com/nyx-sec/nyx/tree/master/src/constraint/"><code>src/constraint/</code></a>.</p>
 <hr>
 <h2 id="combining-the-switches"><a class="docs-anchor" href="#combining-the-switches" aria-label="Link to combining-the-switches" data-pagefind-ignore>#</a>Combining the switches</h2>
 <p>The defaults (all on) are the configuration Nyx is benchmarked against.
@@ -678,7 +680,7 @@ taint, and all four advanced passes entirely and is the right tool.</p>
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

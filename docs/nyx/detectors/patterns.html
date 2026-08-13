@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AST patterns | Nyx docs</title>
-    <meta name="description" content="AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present; it's not..." />
+    <meta name="description" content="AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present, not that..." />
     <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Under the hood, AST patterns, CFG, java, Xss, API" />
     <meta name="author" content="Eli Peter" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -24,13 +24,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="../../../docs/nyx/mermaid.css" />
     <script defer src="../../../docs/search.js"></script>
+    <script defer src="../../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="AST patterns" />
-    <meta property="og:description" content="AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present; it's not..." />
+    <meta property="og:description" content="AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present, not that..." />
     <meta property="og:url" content="https://nyxsec.dev/docs/nyx/detectors/patterns" />
     <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
     <meta property="og:image:type" content="image/png" />
@@ -39,7 +41,7 @@
     <meta property="og:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="AST patterns" />
-    <meta name="twitter:description" content="AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present; it's not..." />
+    <meta name="twitter:description" content="AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present, not that..." />
     <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
     <meta name="twitter:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="theme-color" content="#F9F8F4" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -165,7 +167,7 @@
       "headline": "AST patterns",
       "name": "AST patterns",
       "url": "https://nyxsec.dev/docs/nyx/detectors/patterns",
-      "description": "AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present; it's not...",
+      "description": "AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present, not that...",
       "inLanguage": "en-US",
       "articleSection": "Under the hood",
       "isPartOf": {
@@ -262,7 +264,7 @@
   </div>
           <div class="docs-prose" data-pagefind-body>
 <h1 id="ast-patterns"><a class="docs-anchor" href="#ast-patterns" aria-label="Link to ast-patterns" data-pagefind-ignore>#</a>AST patterns</h1>
-<p>AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present; it&#39;s not proof the construct is exploitable.</p>
+<p>AST patterns are tree-sitter queries that match dangerous structural shapes in source. No dataflow, no CFG. A match means the construct is present, not that it is exploitable.</p>
 <p>Patterns run in every analysis mode. In <code>--mode ast</code> they&#39;re the only active detector.</p>
 <h2 id="rule-ids"><a class="docs-anchor" href="#rule-ids" aria-label="Link to rule-ids" data-pagefind-ignore>#</a>Rule IDs</h2>
 <pre><code class="hljs language-plain"><span class="hljs-tag">&lt;<span class="hljs-name">lang</span>&gt;</span>.<span class="hljs-tag">&lt;<span class="hljs-name">category</span>&gt;</span>.<span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span></code></pre>
@@ -352,12 +354,12 @@
 </tbody></table>
 <h2 id="what-patterns-cant-tell-you"><a class="docs-anchor" href="#what-patterns-cant-tell-you" aria-label="Link to what-patterns-cant-tell-you" data-pagefind-ignore>#</a>What patterns can&#39;t tell you</h2>
 <ul>
-<li><strong>Dataflow.</strong> <code>eval(&quot;1+1&quot;)</code> (safe) and <code>eval(userInput)</code> (dangerous) both match <code>js.code_exec.eval</code>. The taint detector is the one that distinguishes them.</li>
-<li><strong>Reachability.</strong> A pattern in dead code matches identically.</li>
-<li><strong>Semantics.</strong> <code>strcpy(dst, src)</code> always matches, regardless of buffer sizes.</li>
-<li><strong>Indirect calls.</strong> <code>let e = eval; e(input)</code> doesn&#39;t match <code>eval</code>.</li>
-<li><strong>Aliased imports.</strong> <code>from os import system as s; s(cmd)</code> won&#39;t match <code>system</code>.</li>
-<li><strong>Macro expansions.</strong> Tree-sitter parses the macro call site, not the expansion.</li>
+<li>Dataflow. <code>eval(&quot;1+1&quot;)</code> (safe) and <code>eval(userInput)</code> (dangerous) both match <code>js.code_exec.eval</code>; the taint detector is the one that distinguishes them.</li>
+<li>Reachability. A pattern in dead code matches identically.</li>
+<li>Semantics. <code>strcpy(dst, src)</code> always matches, regardless of buffer sizes.</li>
+<li>Indirect calls. <code>let e = eval; e(input)</code> doesn&#39;t match <code>eval</code>.</li>
+<li>Aliased imports. <code>from os import system as s; s(cmd)</code> won&#39;t match <code>system</code>.</li>
+<li>Macro expansions. Tree-sitter parses the macro call site, not the expansion.</li>
 </ul>
 <h2 id="common-false-positives"><a class="docs-anchor" href="#common-false-positives" aria-label="Link to common-false-positives" data-pagefind-ignore>#</a>Common false positives</h2>
 <table>
@@ -478,7 +480,7 @@ stmt.executeQuery(preparedSql);</code></pre>
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../../scanner">Overview</a>
             <a href="../../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

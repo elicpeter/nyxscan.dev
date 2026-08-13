@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dynamic verification | Nyx docs</title>
-    <meta name="description" content="Nyx re-runs findings in generated harnesses when verification is enabled. By default, nyx scan verifies each Confidence = Medium finding, tries payloads in..." />
-    <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Using nyx, Dynamic verification, toml, SSRF, JSON, json" />
+    <meta name="description" content="Static analysis tells you a sink is reachable from a source. Dynamic verification tries to prove it. When verification is on, Nyx builds a small harness..." />
+    <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Using nyx, Dynamic verification, SSRF, JSON, XSS, Java" />
     <meta name="author" content="Eli Peter" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -24,13 +24,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Dynamic verification" />
-    <meta property="og:description" content="Nyx re-runs findings in generated harnesses when verification is enabled. By default, nyx scan verifies each Confidence = Medium finding, tries payloads in..." />
+    <meta property="og:description" content="Static analysis tells you a sink is reachable from a source. Dynamic verification tries to prove it. When verification is on, Nyx builds a small harness..." />
     <meta property="og:url" content="https://nyxsec.dev/docs/nyx/dynamic" />
     <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
     <meta property="og:image:type" content="image/png" />
@@ -39,7 +41,7 @@
     <meta property="og:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Dynamic verification" />
-    <meta name="twitter:description" content="Nyx re-runs findings in generated harnesses when verification is enabled. By default, nyx scan verifies each Confidence = Medium finding, tries payloads in..." />
+    <meta name="twitter:description" content="Static analysis tells you a sink is reachable from a source. Dynamic verification tries to prove it. When verification is on, Nyx builds a small harness..." />
     <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
     <meta name="twitter:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="theme-color" content="#F9F8F4" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -165,7 +167,7 @@
       "headline": "Dynamic verification",
       "name": "Dynamic verification",
       "url": "https://nyxsec.dev/docs/nyx/dynamic",
-      "description": "Nyx re-runs findings in generated harnesses when verification is enabled. By default, nyx scan verifies each Confidence = Medium finding, tries payloads in...",
+      "description": "Static analysis tells you a sink is reachable from a source. Dynamic verification tries to prove it. When verification is on, Nyx builds a small harness...",
       "inLanguage": "en-US",
       "articleSection": "Using nyx",
       "isPartOf": {
@@ -256,25 +258,123 @@
   </div>
           <div class="docs-prose" data-pagefind-body>
 <h1 id="dynamic-verification"><a class="docs-anchor" href="#dynamic-verification" aria-label="Link to dynamic-verification" data-pagefind-ignore>#</a>Dynamic verification</h1>
-<p>Nyx re-runs findings in generated harnesses when verification is enabled. By
-default, <code>nyx scan</code> verifies each <code>Confidence &gt;= Medium</code> finding, tries
-payloads in a sandbox, and writes the result to <code>evidence.dynamic_verdict</code>.
-Default Nyx builds include the <code>dynamic</code> feature; custom
+<p>Static analysis tells you a sink is reachable from a source. Dynamic
+verification tries to prove it. When verification is on, Nyx builds a small
+harness around each finding, runs it in a sandbox against a curated payload
+set, and stamps the result onto <code>evidence.dynamic_verdict</code>.</p>
+<p>It is a second signal, not a replacement for review. A <code>Confirmed</code> verdict
+means Nyx triggered the sink in its harness with an attacker-controlled
+payload and proved the benign control stayed clean. <code>NotConfirmed</code> means the
+harness ran but nothing fired. Neither verdict closes a finding on its own.</p>
+<p>Default Nyx builds include the <code>dynamic</code> feature. Custom
 <code>--no-default-features</code> builds run static-only unless rebuilt with
 <code>--features dynamic</code>.</p>
-<p>Dynamic verification is a second signal, not a replacement for review. A
-confirmed verdict means Nyx triggered the sink in its harness. <code>NotConfirmed</code>
-means the harness ran but no payload fired.</p>
+<h2 id="how-confirmation-works"><a class="docs-anchor" href="#how-confirmation-works" aria-label="Link to how-confirmation-works" data-pagefind-ignore>#</a>How confirmation works</h2>
+<p>Every cap that can be verified ships a curated corpus of payload pairs: at
+least one vulnerable payload and one benign control. The verifier runs both
+through the same harness and compares.</p>
+<ul>
+<li>The vulnerable payload must fire the sink. A payload &quot;fires&quot; when an
+oracle predicate matches the observed behavior, not when a string appears
+in the output.</li>
+<li>The benign control must stay clean. It exercises the same code path with a
+value that a correct implementation handles safely.</li>
+</ul>
+<p>A finding is <code>Confirmed</code> only when at least one vulnerable payload fires and
+every paired benign control stays clean. This differential rule is what keeps
+the verifier from confirming a finding just because the harness echoed an
+input.</p>
+<p>Oracles are behavioral, scoped to the cap:</p>
+<table>
+<thead>
+<tr>
+<th>Cap</th>
+<th>Oracle</th>
+<th>What it observes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Command/code injection</td>
+<td>stub event</td>
+<td>the harness&#39;s exec boundary saw the injected command</td>
+</tr>
+<tr>
+<td>SQL injection</td>
+<td>stub event</td>
+<td>the SQL boundary saw the injected clause</td>
+</tr>
+<tr>
+<td>SSRF, data exfil</td>
+<td>outbound host</td>
+<td>the request left for a host outside the allowlist</td>
+</tr>
+<tr>
+<td>Path traversal</td>
+<td>stub event</td>
+<td>the filesystem boundary opened a path outside the root</td>
+</tr>
+<tr>
+<td>Template injection</td>
+<td>template eval</td>
+<td><code>{{7*7}}</code> rendered as <code>49</code>, not echoed as text</td>
+</tr>
+<tr>
+<td>Deserialization</td>
+<td>gadget marker</td>
+<td>a non-allowlisted class was resolved during decode</td>
+</tr>
+<tr>
+<td>XXE</td>
+<td>entity expansion</td>
+<td>an external entity was expanded by the parser</td>
+</tr>
+<tr>
+<td>LDAP / XPath injection</td>
+<td>result count</td>
+<td>the malicious filter returned more rows than the benign one</td>
+</tr>
+<tr>
+<td>Header / CRLF</td>
+<td>header split</td>
+<td>an injected <code>\r\n</code> split or added a response header</td>
+</tr>
+<tr>
+<td>Open redirect</td>
+<td>redirect host</td>
+<td>the <code>Location</code> header pointed off-origin</td>
+</tr>
+<tr>
+<td>Prototype pollution</td>
+<td>canary touch</td>
+<td>a property write reached <code>Object.prototype</code></td>
+</tr>
+<tr>
+<td>Weak crypto</td>
+<td>key entropy</td>
+<td>the produced key fit inside a 16-bit search space</td>
+</tr>
+<tr>
+<td>JSON parse abuse</td>
+<td>parse depth</td>
+<td>the parser accepted a depth past its limit</td>
+</tr>
+<tr>
+<td>IDOR</td>
+<td>ownership cross</td>
+<td>the read crossed from the caller&#39;s id to another owner&#39;s</td>
+</tr>
+</tbody></table>
+<p>Every canary is derived per-run from <code>BLAKE3(spec_hash || run_nonce)</code>, so it is
+unique per finding, collision-resistant against ambient harness output, and
+never appears on the host.</p>
 <h2 id="running-it"><a class="docs-anchor" href="#running-it" aria-label="Link to running-it" data-pagefind-ignore>#</a>Running it</h2>
-<pre><code class="hljs language-bash">nyx scan                 <span class="hljs-comment"># verifies Medium and High confidence findings</span>
-nyx scan --no-verify     <span class="hljs-comment"># static analysis only</span>
-nyx scan --verify        <span class="hljs-comment"># explicit form of the default behavior</span></code></pre>
-<p>Use <code>--no-verify</code> for fast local checks or editor workflows. Keep verification
-on for CI when scan time allows it.</p>
-<p>To verify low-confidence findings too:</p>
-<pre><code class="hljs language-bash">nyx scan --verify-all-confidence</code></pre>
-<p>Use it when tuning payloads or investigating coverage. It is slower and noisier
-than the default.</p>
+<pre><code class="hljs language-bash">nyx scan                      <span class="hljs-comment"># verifies Medium and High confidence findings</span>
+nyx scan --no-verify          <span class="hljs-comment"># static analysis only</span>
+nyx scan --verify             <span class="hljs-comment"># explicit form of the default behavior</span>
+nyx scan --verify-all-confidence   <span class="hljs-comment"># also verify Low-confidence findings</span></code></pre>
+<p>Use <code>--no-verify</code> for fast local checks or editor workflows. Keep
+verification on for CI when scan time allows it. <code>--verify-all-confidence</code> is
+slower and noisier; reach for it when tuning payloads or chasing coverage.</p>
 <h2 id="verdicts"><a class="docs-anchor" href="#verdicts" aria-label="Link to verdicts" data-pagefind-ignore>#</a>Verdicts</h2>
 <table>
 <thead>
@@ -285,93 +385,457 @@ than the default.</p>
 </thead>
 <tbody><tr>
 <td><code>Confirmed</code></td>
-<td>At least one payload reached the expected sink in the harness.</td>
+<td>A vulnerable payload fired the sink and every benign control stayed clean.</td>
+</tr>
+<tr>
+<td><code>PartiallyConfirmed</code></td>
+<td>The sink was reached but no oracle marker was observed. The exploit chain did not complete. Treat as a strong lead, not a proof.</td>
 </tr>
 <tr>
 <td><code>NotConfirmed</code></td>
-<td>The harness ran, but no payload reached the sink. Treat the original finding as still open until reviewed.</td>
+<td>The harness ran but no payload fired. The path is likely infeasible or the corpus does not cover this shape. The original finding stays open until reviewed.</td>
 </tr>
 <tr>
 <td><code>Inconclusive</code></td>
-<td>Nyx could not finish the check with enough isolation or runtime support.</td>
+<td>Nyx could not finish the check. Carries a typed reason (build failed, spec derivation failed, sandbox error, policy denied, and others).</td>
 </tr>
 <tr>
 <td><code>Unsupported</code></td>
-<td>Nyx did not try the finding. Common causes are unsupported language, unsupported sink shape, missing flow steps, or confidence below the verification threshold.</td>
+<td>Nyx did not attempt the finding. Carries a typed reason (language unsupported, entry kind unsupported, no payloads for cap, confidence below threshold, no sound oracle).</td>
 </tr>
 </tbody></table>
-<h2 id="configuration"><a class="docs-anchor" href="#configuration" aria-label="Link to configuration" data-pagefind-ignore>#</a>Configuration</h2>
-<p>To disable verification for a project, set:</p>
-<pre><code class="hljs language-toml"><span class="hljs-section">[scanner]</span>
-<span class="hljs-attr">verify</span> = <span class="hljs-literal">false</span></code></pre>
-<p>This makes scans static-only unless the command line overrides it.</p>
-<p>The related scanner settings are:</p>
+<p>When a <code>Confirmed</code> sink sits behind a recognized input-validation or
+output-sanitization guard (Spring <code>@PreAuthorize</code>, Express <code>helmet</code>, Nest
+<code>@UseGuards</code>, Django <code>@permission_classes</code>), the verdict demotes to
+<code>ConfirmedWithKnownGuard</code> and the guard names land on
+<code>differential.known_guards</code>. Authentication-only filters do not trigger the
+demotion, since they do not mitigate injection.</p>
+<p><code>PartiallyConfirmed</code> is deliberate. It marks the cases where engine work can
+ratchet without the tool overstating what it proved.</p>
+<h2 id="capability-coverage"><a class="docs-anchor" href="#capability-coverage" aria-label="Link to capability-coverage" data-pagefind-ignore>#</a>Capability coverage</h2>
+<p>Caps split into two groups. Data-style injection (SQL, command, path,
+SSRF, XSS) uses language-neutral payload bytes (<code>&#39; OR 1=1--</code>, <code>../../etc/passwd</code>,
+a callback URL), so the harness emitter for any language can carry them. The
+caps below have language-specific payloads (a Java gadget chain is not a
+Python pickle), so each language is curated on its own.</p>
+<p>A checkmark means a tuned per-language payload set ships for that cell. Cells
+without a checkmark in the data-style rows still run, falling back to the
+language-neutral payload union.</p>
 <table>
 <thead>
 <tr>
-<th>Setting</th>
-<th>Default</th>
-<th>Meaning</th>
+<th>Cap</th>
+<th>Py</th>
+<th>JS</th>
+<th>TS</th>
+<th>Java</th>
+<th>PHP</th>
+<th>Ruby</th>
+<th>Go</th>
+<th>Rust</th>
+<th>C</th>
+<th>C++</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>verify</code></td>
-<td><code>true</code></td>
-<td>Run dynamic verification after static analysis.</td>
+<td>Command / code injection</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
 </tr>
 <tr>
-<td><code>verify_all_confidence</code></td>
-<td><code>false</code></td>
-<td>Include findings below <code>Confidence::Medium</code>.</td>
+<td>SQL injection</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>✓</td>
+<td>union</td>
+<td>union</td>
 </tr>
 <tr>
-<td><code>verify_backend</code></td>
-<td><code>&quot;auto&quot;</code></td>
-<td>Use Docker when available, otherwise use the process backend.</td>
+<td>Path traversal</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>✓</td>
+<td>union</td>
+<td>union</td>
 </tr>
 <tr>
-<td><code>harden_profile</code></td>
-<td><code>&quot;standard&quot;</code></td>
-<td>Hardening profile for the process backend.</td>
+<td>SSRF</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>✓</td>
+<td>union</td>
+<td>union</td>
+</tr>
+<tr>
+<td>XSS</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>union</td>
+<td>✓</td>
+<td>union</td>
+<td>union</td>
+</tr>
+<tr>
+<td>Format string</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td></td>
+</tr>
+<tr>
+<td>Deserialization</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Template injection</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>XXE</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>LDAP injection</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>XPath injection</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Header / CRLF</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Open redirect</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Prototype pollution</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Weak crypto</td>
+<td>✓</td>
+<td></td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>JSON parse abuse</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IDOR</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Data exfiltration</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td></td>
+<td></td>
 </tr>
 </tbody></table>
-<p>See <a href="configuration">Configuration</a> for the full config table.</p>
+<p><code>ENV_VAR</code>, <code>SHELL_ESCAPE</code>, and <code>URL_ENCODE</code> are source and sanitizer caps with
+no externally observable sink behavior. They route to
+<code>Unsupported(SoundOracleUnavailable)</code> rather than counting as a missing-payload
+gap.</p>
+<h2 id="framework-adapters"><a class="docs-anchor" href="#framework-adapters" aria-label="Link to framework-adapters" data-pagefind-ignore>#</a>Framework adapters</h2>
+<p>Adapters bind a function to its external entry surface so the harness can
+drive the real entry point (an HTTP request through the framework, a published
+message, a scheduled fire) instead of calling the function in isolation.
+Middleware and request validation participate in the verdict that way.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>HTTP routers</th>
+<th>Other surfaces</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Python</td>
+<td>Flask, Django, FastAPI, Starlette</td>
+<td>Jinja2, pickle, LDAP, Celery, Kafka, SQS, Pub/Sub, RabbitMQ, Django Channels, Socket.IO, Django middleware, Django + Flask migrations</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>Express, Koa, NestJS, Fastify</td>
+<td>Handlebars, Apollo + Relay GraphQL, lodash.merge + JSON deep-assign, Socket.IO, SQS, Express middleware, Knex + Prisma + Sequelize migrations</td>
+</tr>
+<tr>
+<td>TypeScript</td>
+<td>NestJS</td>
+<td>Object.assign + lodash.merge + JSON deep-assign</td>
+</tr>
+<tr>
+<td>Java</td>
+<td>Spring, Quarkus, Micronaut, Jakarta Servlet</td>
+<td>Thymeleaf, ObjectInputStream, Spring LDAP, Kafka, SQS, RabbitMQ, Quartz, Spring middleware, Flyway + Liquibase migrations</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td>Laravel, Symfony, CodeIgniter</td>
+<td>Twig, unserialize, LDAP, Laravel middleware, Laravel migrations</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td>Rails, Sinatra, Hanami</td>
+<td>ERB, Marshal, Sidekiq, ActionCable, Rails middleware, Rails migrations</td>
+</tr>
+<tr>
+<td>Go</td>
+<td>Gin, Echo, Fiber, Chi</td>
+<td>gqlgen GraphQL, NATS, Pub/Sub, go-migrate migrations</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td>Axum, Actix, Rocket, Warp</td>
+<td>Juniper GraphQL, Refinery + SQLx migrations</td>
+</tr>
+<tr>
+<td>C / C++</td>
+<td>none</td>
+<td>argv / stdin entry only</td>
+</tr>
+</tbody></table>
+<p>Adapters are sanitizer-aware. An XXE, header-injection, open-redirect, SSTI,
+LDAP, XPath, deserialization, crypto, or data-exfil adapter declines the
+binding when the surrounding source visibly hardens the call: a parser set to
+<code>disallow-doctype-decl</code> or <code>resolve_entities=False</code>, a value routed through
+<code>LdapEncoder.filterEncode</code> or <code>escape_filter_chars</code>, a weak primitive swapped
+for <code>secrets.token_bytes</code> or <code>crypto.randomBytes</code> or <code>SecureRandom</code>, or a
+redirect host checked against an allowlist. That cuts adapter false positives
+without losing the genuinely dangerous calls.</p>
+<h2 id="entry-points"><a class="docs-anchor" href="#entry-points" aria-label="Link to entry-points" data-pagefind-ignore>#</a>Entry points</h2>
+<p>The verifier knows how to stand up these entry shapes:</p>
+<p><code>Function</code>, <code>HttpRoute</code>, <code>CliSubcommand</code>, <code>LibraryApi</code>, <code>ClassMethod</code>,
+<code>MessageHandler</code>, <code>ScheduledJob</code>, <code>GraphQLResolver</code>, <code>WebSocket</code>,
+<code>Middleware</code>, <code>Migration</code>.</p>
+<p><code>ClassMethod</code> walks constructor parameters and builds the receiver, preferring
+a default constructor and otherwise stubbing dependencies (<code>MockHttpClient</code>,
+<code>MockDatabaseConnection</code>, <code>MockLogger</code>) up to a bounded depth. <code>MessageHandler</code>
+boots an in-sandbox broker stub on loopback and publishes the payload.
+<code>Migration</code> runs under a database-in-test-mode profile with no real
+connection. An entry kind a language emitter does not yet support produces
+<code>Inconclusive(EntryKindUnsupported)</code> with a hint, never a silent skip.</p>
 <h2 id="sandbox-backends"><a class="docs-anchor" href="#sandbox-backends" aria-label="Link to sandbox-backends" data-pagefind-ignore>#</a>Sandbox backends</h2>
-<pre><code class="hljs language-bash">nyx scan --backend docker    <span class="hljs-comment"># require Docker</span>
-nyx scan --backend process   <span class="hljs-comment"># run directly on the host with weaker isolation</span>
-nyx scan --unsafe-sandbox    <span class="hljs-comment"># alias for --backend process</span></code></pre>
+<pre><code class="hljs language-bash">nyx scan --backend auto      <span class="hljs-comment"># docker when available, else process (default)</span>
+nyx scan --backend docker    <span class="hljs-comment"># require docker</span>
+nyx scan --backend process   <span class="hljs-comment"># run on the host with weaker isolation</span>
+nyx scan --unsafe-sandbox    <span class="hljs-comment"># alias for --backend process</span>
+nyx scan --harden strict     <span class="hljs-comment"># full process-backend lockdown</span></code></pre>
 <p>Docker is the preferred backend. It mounts only the entry file&#39;s directory and
 blocks outbound network by default. Nyx binds a loopback OOB listener at scan
 start for callback-style payloads (SSRF, blind SSTI). When the bind succeeds,
 Docker switches to bridge networking with a host-gateway route so the harness
 can reach the listener; OOB payloads are skipped if the bind fails.</p>
-<p>The process backend is useful for development and machines without Docker. It
-does not provide the same isolation.</p>
+<p>The process backend runs on the host. It is useful for development and
+machines without Docker, and it does not provide the same isolation. Hardening
+profiles apply to it:</p>
+<ul>
+<li><code>standard</code> (default): no-new-privs plus a memory rlimit on Linux. No
+<code>sandbox-exec</code> wrap on macOS.</li>
+<li><code>strict</code>: namespace unshare, chroot to the workdir, and a default-deny
+seccomp filter on Linux; <code>sandbox-exec -f &lt;cap&gt;.sb</code> on macOS. Opt-in,
+because interpreted Linux harnesses can SIGSYS until the per-language seccomp
+allowlists are widened.</li>
+</ul>
+<p>Every sink under test passes through the policy deny rules in
+<code>src/dynamic/policy.rs</code> before the harness builds. Network egress, writes
+outside the sandbox root, and process spawns can be denied per rule, and the
+deny decision lands in the trace.</p>
+<h2 id="performance"><a class="docs-anchor" href="#performance" aria-label="Link to performance" data-pagefind-ignore>#</a>Performance</h2>
+<p>Verification adds a harness build and a sandbox run per finding. Two pieces of
+infrastructure keep that affordable at corpus scale.</p>
+<p>Per-language build pools reuse a warm toolchain across findings instead of
+cold-starting one each time. Java runs a long-lived <code>javac</code> daemon; Node, PHP,
+Ruby, Go, Rust, C, and C++ reuse shared module, package, and object caches;
+Python layers a read-only venv with a warmed bytecode cache. The target is a
+P50 harness build at or under 200ms hot and 1.5s cold, with an OWASP-scale run
+finishing in 10 minutes on the dev reference machine.</p>
+<p>Copy-on-write workdirs (<code>clonefile</code> on macOS, <code>reflink</code> or <code>copy_file_range</code>
+on Linux) replace per-finding file copies, and the worker pool routes findings
+into per-cap concurrency lanes so a slow <code>DESERIALIZE</code> harness does not block
+fast <code>SSRF</code> ones.</p>
+<p>The CI ship gate holds the with-verify to static-only wall-clock ratio at or
+under 1.5x on <code>benches/fixtures/</code>. If a change pushes it past that, the gate
+fails.</p>
 <h2 id="repro-artifacts"><a class="docs-anchor" href="#repro-artifacts" aria-label="Link to repro-artifacts" data-pagefind-ignore>#</a>Repro artifacts</h2>
-<p>Confirmed findings write a repro bundle under:</p>
-<pre><code class="hljs language-text">~/.cache/nyx/dynamic/repro/&lt;spec_hash&gt;/</code></pre>
-<p>The bundle contains the harness spec, payload, expected output, trace, and
-<code>reproduce.sh</code>.</p>
-<pre><code class="hljs language-bash"><span class="hljs-built_in">cd</span> ~/.cache/nyx/dynamic/repro/&lt;spec_hash&gt;
+<p>Confirmed findings write a hermetic bundle under Nyx&#39;s platform cache
+directory:</p>
+<pre><code class="hljs language-text">&lt;cache-dir&gt;/nyx/dynamic/repro/&lt;spec_hash&gt;/</code></pre>
+<p>On Linux this is usually <code>~/.cache/nyx/dynamic/repro/&lt;spec_hash&gt;/</code>; on macOS
+it is usually <code>~/Library/Caches/nyx/dynamic/repro/&lt;spec_hash&gt;/</code>.</p>
+<p>The bundle carries the harness spec, payload, expected output, trace, and a
+<code>reproduce.sh</code>. When the toolchain is pinned in <code>tools/image-builder/images.toml</code>
+it also writes a <code>docker_pull.sh</code>.</p>
+<p>The easiest replay path starts from the finding id shown in scan output or the
+browser UI:</p>
+<pre><code class="hljs language-bash">nyx repro --finding &lt;finding_id&gt;
+nyx repro --finding &lt;finding_id&gt; --docker</code></pre>
+<p>You can also replay an exact bundle by spec hash, or inspect the shell script
+directly:</p>
+<pre><code class="hljs language-bash">nyx repro --spec-hash &lt;spec_hash&gt;
+<span class="hljs-built_in">cd</span> &lt;cache-dir&gt;/nyx/dynamic/repro/&lt;spec_hash&gt;
 ./reproduce.sh
 ./reproduce.sh --docker</code></pre>
-<p>Use the Docker form when the bundle records a pinned container image or when
-host toolchains differ from the original run.</p>
-<h2 id="runtime-cost"><a class="docs-anchor" href="#runtime-cost" aria-label="Link to runtime-cost" data-pagefind-ignore>#</a>Runtime cost</h2>
-<p>Verification adds harness build time and sandbox startup time for each verified
-finding. For quick local checks, <code>--no-verify</code> is usually the right choice. For
-CI or scheduled scans, keep verification enabled so confirmed findings rank
-higher and not-confirmed findings carry the extra context.</p>
+<p>Use the Docker form when the bundle records a pinned image or when host
+toolchains differ from the original run.</p>
+<h2 id="configuration"><a class="docs-anchor" href="#configuration" aria-label="Link to configuration" data-pagefind-ignore>#</a>Configuration</h2>
+<pre><code class="hljs language-toml"><span class="hljs-section">[scanner]</span>
+<span class="hljs-attr">verify</span>                = <span class="hljs-literal">true</span>        <span class="hljs-comment"># run dynamic verification after static analysis</span>
+<span class="hljs-attr">verify_all_confidence</span> = <span class="hljs-literal">false</span>       <span class="hljs-comment"># include findings below Confidence::Medium</span>
+<span class="hljs-attr">verify_backend</span>        = <span class="hljs-string">&quot;auto&quot;</span>      <span class="hljs-comment"># auto | docker | process | firecracker</span>
+<span class="hljs-attr">harden_profile</span>        = <span class="hljs-string">&quot;standard&quot;</span>  <span class="hljs-comment"># standard | strict</span></code></pre>
+<p>Set <code>verify = false</code> to make scans static-only unless the command line
+overrides it. See <a href="configuration">Configuration</a> for the full table.</p>
 <h2 id="event-log"><a class="docs-anchor" href="#event-log" aria-label="Link to event-log" data-pagefind-ignore>#</a>Event log</h2>
 <p>Nyx writes verdict events to:</p>
 <pre><code class="hljs language-text">~/.cache/nyx/dynamic/events.jsonl</code></pre>
 <p>Each line is a JSON object with a versioned envelope:</p>
 <pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;schema_version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;nyx_version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;0.7.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;nyx_version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;0.8.0&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;corpus_version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;15&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;verdict&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;ts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-05-15T18:42:09Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;ts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-06-01T18:42:09Z&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;finding_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;a3b1...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;spec_hash&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;9f4e...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;lang&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;python&quot;</span><span class="hljs-punctuation">,</span>
@@ -382,7 +846,9 @@ higher and not-confirmed findings carry the extra context.</p>
   <span class="hljs-attr">&quot;duration_ms&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">312</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;build_attempts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span>
 <span class="hljs-punctuation">}</span></code></pre>
-<p>The literal <code>nyx_version</code> and <code>corpus_version</code> values shift between releases; see <code>crate::dynamic::telemetry::CORPUS_VERSION</code> for the active payload-corpus version your binary writes.</p>
+<p>The literal <code>nyx_version</code> and <code>corpus_version</code> values shift between releases;
+see <code>crate::dynamic::telemetry::CORPUS_VERSION</code> for the active payload-corpus
+version your binary writes.</p>
 <table>
 <thead>
 <tr>
@@ -404,7 +870,7 @@ higher and not-confirmed findings carry the extra context.</p>
 </tr>
 <tr>
 <td><code>kind</code></td>
-<td><code>verdict</code> or <code>rank_delta</code>. Feedback rows use an <code>event: &quot;verify_feedback&quot;</code> field instead and may pre-date the schema envelope.</td>
+<td><code>verdict</code> or <code>rank_delta</code>. Feedback rows use an <code>event: &quot;verify_feedback&quot;</code> field instead.</td>
 </tr>
 <tr>
 <td><code>ts</code></td>
@@ -428,7 +894,7 @@ higher and not-confirmed findings carry the extra context.</p>
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><code>Confirmed</code>, <code>NotConfirmed</code>, <code>Inconclusive</code>, or <code>Unsupported</code>.</td>
+<td><code>Confirmed</code>, <code>PartiallyConfirmed</code>, <code>NotConfirmed</code>, <code>Inconclusive</code>, or <code>Unsupported</code>.</td>
 </tr>
 <tr>
 <td><code>inconclusive_reason</code></td>
@@ -438,12 +904,12 @@ higher and not-confirmed findings carry the extra context.</p>
 <p>If the schema changes, move or delete the old <code>events.jsonl</code> before reading it
 with the new binary. Programmatic readers should use
 <code>crate::dynamic::telemetry::read_events(path)</code>.</p>
-<h2 id="sampling"><a class="docs-anchor" href="#sampling" aria-label="Link to sampling" data-pagefind-ignore>#</a>Sampling</h2>
+<h3 id="sampling"><a class="docs-anchor" href="#sampling" aria-label="Link to sampling" data-pagefind-ignore>#</a>Sampling</h3>
 <p><code>[telemetry]</code> in <code>nyx.toml</code> controls event retention:</p>
 <pre><code class="hljs language-toml"><span class="hljs-section">[telemetry]</span>
-<span class="hljs-attr">keep_all_confirmed</span> = <span class="hljs-literal">true</span>
+<span class="hljs-attr">keep_all_confirmed</span>    = <span class="hljs-literal">true</span>
 <span class="hljs-attr">keep_all_inconclusive</span> = <span class="hljs-literal">true</span>
-<span class="hljs-attr">sample_rate_other</span> = <span class="hljs-number">1.0</span></code></pre>
+<span class="hljs-attr">sample_rate_other</span>     = <span class="hljs-number">1.0</span></code></pre>
 <p><code>sample_rate_other</code> accepts <code>0.0</code> to <code>1.0</code> and applies to <code>NotConfirmed</code> and
 <code>Unsupported</code> verdicts. The decision is deterministic for a given <code>spec_hash</code>.
 Confirmed, Inconclusive, and rank-delta events are always kept by default.</p>
@@ -452,10 +918,47 @@ Confirmed, Inconclusive, and rank-delta events are always kept by default.</p>
 <p>To record a bad verdict:</p>
 <pre><code class="hljs language-bash">nyx verify-feedback &lt;finding_id&gt; --wrong <span class="hljs-string">&quot;reason&quot;</span></code></pre>
 <p>Feedback is written to the local event log. Nyx does not upload it.</p>
+<h2 id="determinism"><a class="docs-anchor" href="#determinism" aria-label="Link to determinism" data-pagefind-ignore>#</a>Determinism</h2>
+<p>Every random source is seeded from the spec hash, so two runs of the same spec
+produce identical payloads and identical verdicts. <code>scripts/check_no_unseeded_rand.sh</code>
+audits the tree for unseeded <code>rand</code> usage on every CI run.</p>
+<h2 id="limitations"><a class="docs-anchor" href="#limitations" aria-label="Link to limitations" data-pagefind-ignore>#</a>Limitations</h2>
+<ul>
+<li>The harness drives the finding&#39;s enclosing entry function when one is
+derivable, routing the payload to the tainted parameter, so a guard in the
+code around the sink (a merge target built with <code>Object.create(null)</code>, an
+<code>ObjectInputStream</code> subclass whose <code>resolveClass</code> enforces an allowlist, a
+const-name check before <code>Marshal.load</code>) runs first and participates in the
+verdict. The build-time choice is recorded on the verify trace as
+<code>entry_invocation</code> (<code>mode=entry_function</code> or <code>mode=direct_sink</code>). When no
+enclosing entry can be derived the harness falls back to driving the sink
+directly, and that fallback can over-confirm a guard it never executes. Read
+a <code>direct_sink</code> <code>Confirmed</code> as &quot;this sink is reachable and fires on attacker
+input,&quot; not &quot;this exact code path has no in-line mitigation.&quot; Framework-level
+guards (auth middleware, helmet) are also recognized and demote to
+<code>ConfirmedWithKnownGuard</code>.</li>
+<li>Per-language payload curation is uneven. Command and code injection ship for
+all ten languages; the classic data-style injection caps (SQL, path
+traversal, SSRF, XSS) ship a tuned set for Rust and fall back to a
+language-neutral payload union elsewhere; the framework-specific caps are
+curated for the languages where they occur. The matrix above is the precise
+state.</li>
+<li>A <code>NotConfirmed</code> verdict is not a clean bill. It means the harness did not
+fire, which can be an infeasible path or a corpus that does not cover the
+shape. Keep reviewing <code>NotConfirmed</code> findings.</li>
+<li>The process backend is weaker isolation than Docker. Use <code>--backend docker</code>
+or <code>--harden strict</code> for untrusted code, and never <code>--unsafe-sandbox</code> in CI.</li>
+<li>Real-corpus acceptance rows (OWASP Benchmark, NodeGoat, Juice Shop, and the
+polyglot set) self-skip in CI unless the corresponding <code>NYX_*_CORPUS</code>
+environment variable points at a checkout. They are not vendored into the
+repo.</li>
+<li>C and C++ have no framework adapters. Findings in those languages verify
+through <code>argv</code> and <code>stdin</code> entry points only.</li>
+</ul>
 <h2 id="browser-ui"><a class="docs-anchor" href="#browser-ui" aria-label="Link to browser-ui" data-pagefind-ignore>#</a>Browser UI</h2>
 <p><code>nyx serve</code> shows dynamic verdicts on finding detail pages, uses them in
-ranking, and can compare verdict changes between saved scans.</p>
-<p>See <a href="output">Output formats</a> for the <code>dynamic_verdict</code> schema.</p>
+ranking, and can compare verdict changes between saved scans. See
+<a href="output">Output formats</a> for the <code>dynamic_verdict</code> schema.</p>
 
           </div>
           <nav class="docs-prevnext" aria-label="Page navigation"><a class="docs-prevnext__link docs-prevnext__link--prev" href="serve">
@@ -487,7 +990,7 @@ ranking, and can compare verdict changes between saved scans.</p>
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

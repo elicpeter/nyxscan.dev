@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Release | Nyx Agent docs</title>
+    <meta name="description" content="Nyx Agent publishes the nyx-agent binary crate plus several internal implementation crates. The internal crates are visible on crates.io only so Cargo can..." />
+    <meta name="keywords" content="Nyx Agent, nyx-agent, local pentesting, live appsec testing, verified vulnerabilities, stored evidence, Contributor docs, Release, ai, api" />
+    <meta name="author" content="Eli Peter" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="https://nyxsec.dev/docs/agent/release" />
+    <link rel="sitemap" type="application/xml" href="https://nyxsec.dev/sitemap.xml" />
+    <link rel="alternate" hreflang="en" href="https://nyxsec.dev/docs/agent/release" />
+    <link rel="alternate" hreflang="x-default" href="https://nyxsec.dev/docs/agent/release" />
+    <link rel="prev" href="dev/frontend" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="../../favicon-64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../../favicon-180.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="alternate" type="application/rss+xml" title="Nyx | News &amp; release notes" href="/news/feed.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../styles.css" />
+    <script defer src="../../docs/search.js"></script>
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Nyx" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Release" />
+    <meta property="og:description" content="Nyx Agent publishes the nyx-agent binary crate plus several internal implementation crates. The internal crates are visible on crates.io only so Cargo can..." />
+    <meta property="og:url" content="https://nyxsec.dev/docs/agent/release" />
+    <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nyx Agent local pentesting documentation" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Release" />
+    <meta name="twitter:description" content="Nyx Agent publishes the nyx-agent binary crate plus several internal implementation crates. The internal crates are visible on crates.io only so Cargo can..." />
+    <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="Nyx Agent local pentesting documentation" />
+    <meta name="theme-color" content="#F9F8F4" />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://nyxsec.dev/#person",
+      "name": "Eli Peter",
+      "url": "https://github.com/elicpeter",
+      "sameAs": [
+        "https://github.com/elicpeter",
+        "https://github.com/sponsors/elicpeter"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://nyxsec.dev/#organization",
+      "name": "Nyx",
+      "alternateName": [
+        "Nyx Scanner",
+        "Nyx Agent",
+        "NyxSec",
+        "nyxsec.dev"
+      ],
+      "url": "https://nyxsec.dev/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://nyxsec.dev/assets/logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "founder": {
+        "@id": "https://nyxsec.dev/#person"
+      },
+      "sameAs": [
+        "https://github.com/nyx-sec/nyx",
+        "https://github.com/nyx-sec/nyx-agent",
+        "https://github.com/sponsors/elicpeter"
+      ],
+      "knowsAbout": [
+        "Static Application Security Testing",
+        "source-to-sink taint analysis",
+        "local pentesting",
+        "software supply chain security",
+        "SARIF"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "commercial licensing and support",
+        "email": "contact@nyxsec.dev",
+        "availableLanguage": [
+          "en"
+        ]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://nyxsec.dev/#website",
+      "url": "https://nyxsec.dev/",
+      "name": "Nyx",
+      "alternateName": "nyxsec.dev",
+      "description": "Local security tooling for deterministic scanning and live testing.",
+      "inLanguage": "en-US",
+      "publisher": {
+        "@id": "https://nyxsec.dev/#organization"
+      },
+      "creator": {
+        "@id": "https://nyxsec.dev/#person"
+      }
+    },
+    {
+      "@type": [
+        "SoftwareApplication",
+        "SoftwareSourceCode"
+      ],
+      "@id": "https://nyxsec.dev/agent#software",
+      "name": "Nyx Agent",
+      "alternateName": [
+        "nyx-agent"
+      ],
+      "url": "https://nyxsec.dev/agent",
+      "applicationCategory": "SecurityApplication",
+      "applicationSubCategory": "Local Application Security Testing",
+      "operatingSystem": "Cross-platform",
+      "programmingLanguage": "Rust, TypeScript",
+      "codeRepository": "https://github.com/nyx-sec/nyx-agent",
+      "downloadUrl": "https://crates.io/crates/nyx-agent",
+      "installUrl": "https://nyxsec.dev/docs/agent/install",
+      "softwareHelp": "https://nyxsec.dev/docs/agent/",
+      "releaseNotes": "https://nyxsec.dev/news/nyx-agent",
+      "license": "https://spdx.org/licenses/AGPL-3.0-or-later.html",
+      "description": "Documentation for Nyx Agent, the local pentesting product for development apps. Install, quickstart, CLI, configuration, API, triggers, runs, and architecture.",
+      "featureList": [
+        "Local pentest runs for development apps",
+        "Route and API exploration",
+        "Live verification with stored evidence",
+        "Project-level run history and triggers"
+      ],
+      "maintainer": {
+        "@id": "https://nyxsec.dev/#person"
+      },
+      "author": {
+        "@id": "https://nyxsec.dev/#person"
+      },
+      "publisher": {
+        "@id": "https://nyxsec.dev/#organization"
+      },
+      "isAccessibleForFree": true,
+      "sameAs": [
+        "https://github.com/nyx-sec/nyx-agent",
+        "https://nyxsec.dev/docs/agent/",
+        "https://crates.io/crates/nyx-agent"
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://nyxsec.dev/docs/agent/release#article",
+      "headline": "Release",
+      "name": "Release",
+      "url": "https://nyxsec.dev/docs/agent/release",
+      "description": "Nyx Agent publishes the nyx-agent binary crate plus several internal implementation crates. The internal crates are visible on crates.io only so Cargo can...",
+      "inLanguage": "en-US",
+      "articleSection": "Contributor docs",
+      "isPartOf": {
+        "@id": "https://nyxsec.dev/#website"
+      },
+      "publisher": {
+        "@id": "https://nyxsec.dev/#organization"
+      },
+      "author": {
+        "@id": "https://nyxsec.dev/#person"
+      },
+      "image": "https://nyxsec.dev/og-image.png",
+      "mainEntityOfPage": "https://nyxsec.dev/docs/agent/release",
+      "about": {
+        "@id": "https://nyxsec.dev/agent#software"
+      },
+      "mainEntity": {
+        "@id": "https://nyxsec.dev/agent#software"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://nyxsec.dev/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Docs",
+          "item": "https://nyxsec.dev/docs/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Nyx Agent docs",
+          "item": "https://nyxsec.dev/docs/agent/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Release",
+          "item": "https://nyxsec.dev/docs/agent/release"
+        }
+      ],
+      "@id": "https://nyxsec.dev/docs/agent/release#breadcrumbs"
+    }
+  ]
+}
+    </script>
+  </head>
+  <body class="docs-body">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="container site-header__inner">
+        <a class="brand" href="../../" aria-label="Nyx home">
+          <img src="../../assets/logo.png" alt="Nyx" class="brand-logo" />
+        </a>
+        <span class="header-wordmark">NYX</span>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="../../scanner">Scanner</a>
+          <a href="../../agent">Agent</a>
+          <a href="../../news/">News</a>
+          <a href="../../docs/" aria-current="page">Docs</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="docs-page">
+      <div class="docs-shell">
+        <nav class="docs-sidebar" aria-label="Documentation"><a class="docs-sidebar__brand" href="./">Agent docs</a><a class="docs-sidebar__home" href="../">All docs</a><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Get started</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="install">Install</a></li><li><a class="docs-sidebar__link" href="quickstart">Quickstart</a></li><li><a class="docs-sidebar__link" href="cli">CLI</a></li><li><a class="docs-sidebar__link" href="config">Config</a></li><li><a class="docs-sidebar__link" href="state-dir">State Directory</a></li><li><a class="docs-sidebar__link" href="product-store">Product Store</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Architecture</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="architecture">Architecture</a></li><li><a class="docs-sidebar__link" href="runs">Runs</a></li><li><a class="docs-sidebar__link" href="attack-graph">Attack Graph</a></li><li><a class="docs-sidebar__link" href="business-logic-templates">Business Logic Templates</a></li><li><a class="docs-sidebar__link" href="events">Events</a></li><li><a class="docs-sidebar__link" href="ai-runtime">AI Runtime</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Projects</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="cli#project">CLI: Project</a></li><li><a class="docs-sidebar__link" href="quickstart#create-a-project">Quickstart: Create a Project</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">HTTP API</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="api">API</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Triggers</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="triggers/">Overview</a></li><li><a class="docs-sidebar__link" href="triggers/cron">Cron</a></li><li><a class="docs-sidebar__link" href="triggers/webhook">Webhook</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">CI integration</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="ci/github-actions">GitHub Actions</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Contributor docs</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="dev/sqlx">SQLx</a></li><li><a class="docs-sidebar__link" href="dev/frontend">Frontend</a></li><li><a class="docs-sidebar__link" href="release" aria-current="page">Release</a></li></ul></div></nav>
+        <article class="docs-content">
+          <div class="docs-search docs-search--content" data-docs-search>
+    <label class="visually-hidden" for="docs-search-input">Search docs</label>
+    <div class="docs-search__control">
+      <span class="docs-search__icon" aria-hidden="true"></span>
+      <input id="docs-search-input" data-docs-search-input type="search" placeholder="Search docs" autocomplete="off" autocapitalize="none" spellcheck="false" role="combobox" aria-autocomplete="list" aria-controls="docs-search-results" aria-expanded="false" />
+      <kbd class="docs-search__key" aria-hidden="true">⌘K</kbd>
+    </div>
+    <div class="docs-search__panel" data-docs-search-panel hidden>
+      <div class="docs-search__status" data-docs-search-status></div>
+      <div class="docs-search__results" id="docs-search-results" data-docs-search-results role="listbox" aria-label="Search results"></div>
+    </div>
+  </div>
+          <div class="docs-prose" data-pagefind-body>
+<h1 id="release"><a class="docs-anchor" href="#release" aria-label="Link to release" data-pagefind-ignore>#</a>Release</h1>
+<p>Nyx Agent publishes the <code>nyx-agent</code> binary crate plus several internal
+implementation crates. The internal crates are visible on crates.io only so
+Cargo can install the binary with versioned dependencies; they are not stable
+public APIs.</p>
+<h2 id="preflight"><a class="docs-anchor" href="#preflight" aria-label="Link to preflight" data-pagefind-ignore>#</a>Preflight</h2>
+<pre><code class="hljs language-bash">cargo <span class="hljs-built_in">fmt</span> --all -- --check
+cargo clippy --workspace --all-targets --all-features -- -D warnings
+cargo <span class="hljs-built_in">test</span> --workspace --all-features
+pnpm --<span class="hljs-built_in">dir</span> frontend run check
+pnpm --<span class="hljs-built_in">dir</span> frontend <span class="hljs-built_in">test</span>
+pnpm --<span class="hljs-built_in">dir</span> frontend run build
+rsync -a --delete frontend/dist/ crates/nyx-agent-ui/dist/</code></pre>
+<p><code>cargo install nyx-agent</code> uses the packaged
+<code>crates/nyx-agent-ui/dist/</code> assets, so keep that directory in sync with
+the current frontend build before publishing.</p>
+<h2 id="publish-order"><a class="docs-anchor" href="#publish-order" aria-label="Link to publish-order" data-pagefind-ignore>#</a>Publish Order</h2>
+<p>Publish in dependency order:</p>
+<ol>
+<li><code>nyx-agent-types</code></li>
+<li><code>nyx-agent-ui</code></li>
+<li><code>nyx-agent-core</code></li>
+<li><code>nyx-agent-nyx</code></li>
+<li><code>nyx-agent-sandbox</code></li>
+<li><code>nyx-agent-ai</code></li>
+<li><code>nyx-agent-api</code></li>
+<li><code>nyx-agent</code></li>
+</ol>
+<p>Cargo dry-runs for dependent crates can fail with <code>no matching package named nyx-agent-* found</code> until the earlier crates in this list are
+actually published and visible in the crates.io index. That is expected.
+The publish command for each crate is:</p>
+<pre><code class="hljs language-bash">cargo publish -p &lt;crate-name&gt;</code></pre>
+
+          </div>
+          <nav class="docs-prevnext" aria-label="Page navigation"><a class="docs-prevnext__link docs-prevnext__link--prev" href="dev/frontend">
+        <span class="docs-prevnext__label">Previous</span>
+        <span class="docs-prevnext__title">Frontend</span>
+      </a><span class="docs-prevnext__spacer"></span></nav>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <div class="site-footer__summary">
+          <span class="site-footer__brand">Nyx</span>
+          <p class="site-footer__copy">© 2026 Eli Peter · Nyx Agent is licensed under AGPL-3.0-or-later.</p>
+        </div>
+        <nav class="site-footer__nav" aria-label="Footer">
+          <div class="site-footer__group" role="group" aria-labelledby="footer-project">
+            <span id="footer-project" class="site-footer__heading">Project</span>
+            <a href="../../">Home</a>
+            <a href="../../news/">News</a>
+            <a href="../../docs/">All docs</a>
+            <a href="https://github.com/sponsors/elicpeter">Sponsor</a>
+          </div>
+          <div class="site-footer__group" role="group" aria-labelledby="footer-scanner">
+            <span id="footer-scanner" class="site-footer__heading">Scanner</span>
+            <a href="../../scanner">Overview</a>
+            <a href="../../docs/nyx/">Docs</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
+            <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
+            <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
+          </div>
+          <div class="site-footer__group" role="group" aria-labelledby="footer-agent">
+            <span id="footer-agent" class="site-footer__heading">Agent</span>
+            <a href="../../agent">Overview</a>
+            <a href="../../docs/agent/">Docs</a>
+            <a href="https://github.com/nyx-sec/nyx-agent">GitHub</a>
+            <a href="../../agent#support">Support</a>
+          </div>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

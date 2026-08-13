@@ -24,7 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -258,7 +260,7 @@
 <h1 id="rule-reference"><a class="docs-anchor" href="#rule-reference" aria-label="Link to rule-reference" data-pagefind-ignore>#</a>Rule reference</h1>
 <p>Every finding Nyx emits has a rule ID. This page enumerates the IDs that ship with the scanner, grouped by family.</p>
 <blockquote>
-<p>This page is written by hand and drifts against the code. Authoritative sources: <a href="https://github.com/elicpeter/nyx/tree/master/src/patterns"><code>src/patterns/&lt;lang&gt;.rs</code></a> for AST patterns, <a href="https://github.com/elicpeter/nyx/tree/master/src/labels"><code>src/labels/&lt;lang&gt;.rs</code></a> for taint matchers, and <a href="https://github.com/elicpeter/nyx/blob/master/src/auth_analysis/config.rs"><code>src/auth_analysis/config.rs</code></a> for auth rules. If a rule fires that isn&#39;t listed here, the source file is right and this page is wrong.</p>
+<p>This page is written by hand and drifts against the code. Authoritative sources: <a href="https://github.com/nyx-sec/nyx/tree/master/src/patterns"><code>src/patterns/&lt;lang&gt;.rs</code></a> for AST patterns, <a href="https://github.com/nyx-sec/nyx/tree/master/src/labels"><code>src/labels/&lt;lang&gt;.rs</code></a> for taint matchers, and <a href="https://github.com/nyx-sec/nyx/blob/master/src/auth_analysis/config.rs"><code>src/auth_analysis/config.rs</code></a> for auth rules. If a rule fires that isn&#39;t listed here, the source file is right and this page is wrong.</p>
 </blockquote>
 <p>If you&#39;d rather browse rules interactively, <a href="serve"><code>nyx serve</code></a> ships a Rules page that lists every loaded matcher with its language, kind, and capability:</p>
 <p align="center"><img src="assets/screenshots/docs/serve-rules.png" alt="Nyx Rules page: filterable list of 218 rules with language, kind (SOURCE/SANITIZER/SINK), capability, and finding count columns" width="900"/></p><h2 id="id-format"><a class="docs-anchor" href="#id-format" aria-label="Link to id-format" data-pagefind-ignore>#</a>ID format</h2>
@@ -450,7 +452,7 @@
 <p>See <a href="auth">auth.md</a> for scope, the five sink-classes, and tuning.</p>
 <h2 id="ast-patterns-by-language"><a class="docs-anchor" href="#ast-patterns-by-language" aria-label="Link to ast-patterns-by-language" data-pagefind-ignore>#</a>AST patterns by language</h2>
 <p>Each language ships a tree-sitter pattern registry. Structural match on the pattern, no dataflow. Some patterns also have a Tier B heuristic guard (e.g. SQL execute must receive a concatenation, not a literal) noted in the registry.</p>
-<p>The tables below are generated from <code>src/patterns/&lt;lang&gt;.rs</code> by <a href="https://github.com/elicpeter/nyx/tree/master/tools/docgen"><code>tools/docgen</code></a>. Run <code>cargo run --features docgen --bin nyx-docgen</code> after changing the registry to refresh them.</p>
+<p>The tables below are generated from <code>src/patterns/&lt;lang&gt;.rs</code> by <a href="https://github.com/nyx-sec/nyx/tree/master/tools/docgen"><code>tools/docgen</code></a>. Run <code>cargo run --features docgen --bin nyx-docgen</code> after changing the registry to refresh them.</p>
 <!-- BEGIN AUTOGEN rules-by-language --><h3 id="c-8-patterns"><a class="docs-anchor" href="#c-8-patterns" aria-label="Link to c-8-patterns" data-pagefind-ignore>#</a>C: 8 patterns</h3>
 <table>
 <thead>
@@ -634,7 +636,7 @@
 <td>Medium</td>
 </tr>
 </tbody></table>
-<h3 id="java-10-patterns"><a class="docs-anchor" href="#java-10-patterns" aria-label="Link to java-10-patterns" data-pagefind-ignore>#</a>Java: 10 patterns</h3>
+<h3 id="java-9-patterns"><a class="docs-anchor" href="#java-9-patterns" aria-label="Link to java-9-patterns" data-pagefind-ignore>#</a>Java: 9 patterns</h3>
 <table>
 <thead>
 <tr>
@@ -669,6 +671,12 @@
 <td>High</td>
 </tr>
 <tr>
+<td><code>java.crypto.weak_algorithm</code></td>
+<td>Medium</td>
+<td>A</td>
+<td>Medium</td>
+</tr>
+<tr>
 <td><code>java.reflection.class_forname</code></td>
 <td>Medium</td>
 <td>A</td>
@@ -687,25 +695,13 @@
 <td>Medium</td>
 </tr>
 <tr>
-<td><code>java.xss.getwriter_print</code></td>
-<td>Medium</td>
-<td>A</td>
-<td>High</td>
-</tr>
-<tr>
 <td><code>java.crypto.insecure_random</code></td>
 <td>Low</td>
 <td>A</td>
 <td>Medium</td>
 </tr>
-<tr>
-<td><code>java.crypto.weak_digest</code></td>
-<td>Low</td>
-<td>A</td>
-<td>Medium</td>
-</tr>
 </tbody></table>
-<h3 id="javascript-22-patterns"><a class="docs-anchor" href="#javascript-22-patterns" aria-label="Link to javascript-22-patterns" data-pagefind-ignore>#</a>JavaScript: 22 patterns</h3>
+<h3 id="javascript-23-patterns"><a class="docs-anchor" href="#javascript-23-patterns" aria-label="Link to javascript-23-patterns" data-pagefind-ignore>#</a>JavaScript: 23 patterns</h3>
 <table>
 <thead>
 <tr>
@@ -824,6 +820,12 @@
 <td>Medium</td>
 </tr>
 <tr>
+<td><code>js.crypto.hardcoded_key</code></td>
+<td>Low</td>
+<td>A</td>
+<td>Medium</td>
+</tr>
+<tr>
 <td><code>js.crypto.math_random</code></td>
 <td>Low</td>
 <td>A</td>
@@ -925,7 +927,7 @@
 <td>Medium</td>
 </tr>
 </tbody></table>
-<h3 id="python-15-patterns"><a class="docs-anchor" href="#python-15-patterns" aria-label="Link to python-15-patterns" data-pagefind-ignore>#</a>Python: 15 patterns</h3>
+<h3 id="python-17-patterns"><a class="docs-anchor" href="#python-17-patterns" aria-label="Link to python-17-patterns" data-pagefind-ignore>#</a>Python: 17 patterns</h3>
 <table>
 <thead>
 <tr>
@@ -1020,10 +1022,22 @@
 <td>Medium</td>
 </tr>
 <tr>
+<td><code>py.crypto.md5_bare</code></td>
+<td>Low</td>
+<td>A</td>
+<td>Low</td>
+</tr>
+<tr>
 <td><code>py.crypto.sha1</code></td>
 <td>Low</td>
 <td>A</td>
 <td>Medium</td>
+</tr>
+<tr>
+<td><code>py.crypto.sha1_bare</code></td>
+<td>Low</td>
+<td>A</td>
+<td>Low</td>
 </tr>
 </tbody></table>
 <h3 id="ruby-11-patterns"><a class="docs-anchor" href="#ruby-11-patterns" aria-label="Link to ruby-11-patterns" data-pagefind-ignore>#</a>Ruby: 11 patterns</h3>
@@ -1192,7 +1206,7 @@
 <td>High</td>
 </tr>
 </tbody></table>
-<h3 id="typescript-22-patterns"><a class="docs-anchor" href="#typescript-22-patterns" aria-label="Link to typescript-22-patterns" data-pagefind-ignore>#</a>TypeScript: 22 patterns</h3>
+<h3 id="typescript-23-patterns"><a class="docs-anchor" href="#typescript-23-patterns" aria-label="Link to typescript-23-patterns" data-pagefind-ignore>#</a>TypeScript: 23 patterns</h3>
 <table>
 <thead>
 <tr>
@@ -1299,6 +1313,12 @@
 <td>Medium</td>
 </tr>
 <tr>
+<td><code>ts.crypto.hardcoded_key</code></td>
+<td>Low</td>
+<td>A</td>
+<td>Medium</td>
+</tr>
+<tr>
 <td><code>ts.crypto.math_random</code></td>
 <td>Low</td>
 <td>A</td>
@@ -1339,7 +1359,7 @@
 <p><code>nyx config add-rule --cap &lt;name&gt;</code> and <code>[analysis.languages.*.rules]</code> in config accept:</p>
 <p><code>env_var</code>, <code>html_escape</code>, <code>shell_escape</code>, <code>url_encode</code>, <code>json_parse</code>, <code>file_io</code>, <code>fmt_string</code>, <code>sql_query</code>, <code>deserialize</code>, <code>ssrf</code>, <code>code_exec</code>, <code>crypto</code>, <code>unauthorized_id</code>, <code>data_exfil</code>, <code>ldap_injection</code>, <code>xpath_injection</code>, <code>header_injection</code>, <code>open_redirect</code>, <code>ssti</code>, <code>xxe</code>, <code>prototype_pollution</code>, <code>all</code></p>
 <p>Aliases: <code>data_exfiltration</code> for <code>data_exfil</code>, <code>ldapi</code> for <code>ldap_injection</code>, <code>xpathi</code> for <code>xpath_injection</code>, <code>crlf</code> and <code>response_splitting</code> for <code>header_injection</code>, <code>redirect</code> for <code>open_redirect</code>, <code>template_injection</code> for <code>ssti</code>, <code>proto_pollution</code> for <code>prototype_pollution</code>.</p>
-<p>Source for both the enum and the <code>to_cap</code> mapping: <a href="https://github.com/elicpeter/nyx/blob/master/src/labels/mod.rs"><code>src/labels/mod.rs</code></a> (<code>Cap</code> and <code>CAP_RULE_REGISTRY</code>) and <a href="https://github.com/elicpeter/nyx/blob/master/src/utils/config.rs"><code>src/utils/config.rs</code></a> (<code>CapName</code>).</p>
+<p>Source for both the enum and the <code>to_cap</code> mapping: <a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/mod.rs"><code>src/labels/mod.rs</code></a> (<code>Cap</code> and <code>CAP_RULE_REGISTRY</code>) and <a href="https://github.com/nyx-sec/nyx/blob/master/src/utils/config.rs"><code>src/utils/config.rs</code></a> (<code>CapName</code>).</p>
 
           </div>
           <nav class="docs-prevnext" aria-label="Page navigation"><a class="docs-prevnext__link docs-prevnext__link--prev" href="language-maturity">
@@ -1371,7 +1391,7 @@
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

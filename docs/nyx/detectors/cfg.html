@@ -24,7 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="../../../docs/nyx/mermaid.css" />
     <script defer src="../../../docs/search.js"></script>
+    <script defer src="../../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -306,18 +308,18 @@
 </tr>
 </tbody></table>
 <h2 id="what-it-detects"><a class="docs-anchor" href="#what-it-detects" aria-label="Link to what-it-detects" data-pagefind-ignore>#</a>What it detects</h2>
-<p><strong><code>cfg-unguarded-sink</code></strong>: A sink call (<code>system</code>, <code>eval</code>, <code>Command::new</code>, <code>db.execute</code>, etc.) is reachable from function entry without passing through any guard or sanitizer that matches the sink&#39;s capability.</p>
-<p><strong><code>cfg-auth-gap</code></strong>: A function identified as a web handler (by parameter naming conventions like <code>req</code>, <code>res</code>, <code>ctx</code>, <code>request</code>, language-dependent) reaches a privileged sink (shell execution, file I/O) without a preceding authentication call.</p>
-<p><strong><code>cfg-unreachable-*</code></strong>: Sinks, sanitizers, or sources in dead code. Usually signals a refactoring error that silently disabled security-relevant logic.</p>
-<p><strong><code>cfg-error-fallthrough</code></strong>: An error-handling branch (null check, error-return check) does not terminate. Execution falls through to a dangerous operation on the error path.</p>
-<p><strong><code>cfg-resource-leak</code>, <code>cfg-lock-not-released</code></strong>: A resource acquisition (<code>File::open</code>, <code>fopen</code>, <code>socket</code>, <code>Lock</code>) is not matched by a release on every exit path from the function.</p>
+<p><code>cfg-unguarded-sink</code>: a sink call (<code>system</code>, <code>eval</code>, <code>Command::new</code>, <code>db.execute</code>, etc.) reachable from function entry without passing any guard or sanitizer that matches the sink&#39;s capability.</p>
+<p><code>cfg-auth-gap</code>: a function identified as a web handler (by parameter naming conventions like <code>req</code>, <code>res</code>, <code>ctx</code>, <code>request</code>, language-dependent) reaches a privileged sink (shell execution, file I/O) with no preceding authentication call.</p>
+<p><code>cfg-unreachable-*</code>: sinks, sanitizers, or sources in dead code. Usually a refactoring error that silently disabled security-relevant logic.</p>
+<p><code>cfg-error-fallthrough</code>: an error-handling branch (null check, error-return check) does not terminate, so execution falls through to a dangerous operation on the error path.</p>
+<p><code>cfg-resource-leak</code>, <code>cfg-lock-not-released</code>: a resource acquisition (<code>File::open</code>, <code>fopen</code>, <code>socket</code>, <code>Lock</code>) is not matched by a release on every exit path from the function.</p>
 <h2 id="what-it-cant-detect"><a class="docs-anchor" href="#what-it-cant-detect" aria-label="Link to what-it-cant-detect" data-pagefind-ignore>#</a>What it can&#39;t detect</h2>
 <ul>
-<li><strong>Inter-procedural guards.</strong> Middleware-level auth, helper functions that internally call auth, and cleanup performed in a caller are invisible.</li>
-<li><strong>Dynamic dispatch.</strong> Virtual calls, function pointers, closures resolve to no specific callee.</li>
-<li><strong>Correctness of guards.</strong> The detector checks <em>a</em> guard dominates the sink. It cannot check the guard is correct. A no-op <code>if true {}</code> would suppress the finding.</li>
-<li><strong>Custom validation logic.</strong> Only recognised guard names are checked. <code>if password == expected</code> is not a recognised guard.</li>
-<li><strong>Cross-function resource flows.</strong> If a file handle opens in one function and closes in another, the opener gets flagged as a leak. This is the largest source of FPs on factory-pattern code.</li>
+<li>Inter-procedural guards. Middleware-level auth, helper functions that internally call auth, and cleanup performed in a caller are invisible.</li>
+<li>Dynamic dispatch. Virtual calls, function pointers, and closures resolve to no specific callee.</li>
+<li>Correctness of guards. The detector checks that <em>a</em> guard dominates the sink, not that the guard is correct: a no-op <code>if true {}</code> would suppress the finding.</li>
+<li>Custom validation logic. Only recognised guard names are checked, so <code>if password == expected</code> is not a recognised guard.</li>
+<li>Cross-function resource flows. If a file handle opens in one function and closes in another, the opener gets flagged as a leak. This is the largest source of FPs on factory-pattern code.</li>
 </ul>
 <h2 id="common-false-positives"><a class="docs-anchor" href="#common-false-positives" aria-label="Link to common-false-positives" data-pagefind-ignore>#</a>Common false positives</h2>
 <table>
@@ -487,7 +489,7 @@
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../../scanner">Overview</a>
             <a href="../../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

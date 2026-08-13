@@ -24,7 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -462,6 +464,12 @@ nyx <span class="hljs-attr">--help</span></code></pre>
 <td>Expand all instances of a specific rule (bypass rollup)</td>
 </tr>
 </tbody></table>
+<p><code>nyx scan</code> automatically reads <code>.nyx/triage.json</code> from the scan root when the
+file exists. Terminal triage states written by <code>nyx serve</code> (<code>false_positive</code>,
+<code>accepted_risk</code>, <code>suppressed</code>, and <code>fixed</code>) are hidden from CLI output and do
+not trigger <code>--fail-on</code> by default. Use <code>--show-suppressed</code> to include them in
+console, JSON, or SARIF output with their <code>triage_state</code> and optional
+<code>triage_note</code>.</p>
 <p><strong>Severity expression formats</strong>:</p>
 <pre><code class="hljs language-bash">--severity HIGH              <span class="hljs-comment"># Only high</span>
 --severity <span class="hljs-string">&quot;HIGH,MEDIUM&quot;</span>     <span class="hljs-comment"># High or medium</span>
@@ -691,6 +699,54 @@ nyx scan . --include-quality --show-instances rs.quality.unwrap
 
 <span class="hljs-comment"># Allow more LOW findings</span>
 nyx scan . --max-low 50 --max-low-per-file 5</code></pre>
+<hr>
+<h2 id="nyx-repro"><a class="docs-anchor" href="#nyx-repro" aria-label="Link to nyx-repro" data-pagefind-ignore>#</a><code>nyx repro</code></h2>
+<p>Replay a dynamic repro bundle for a confirmed finding.</p>
+<pre><code class="hljs language-plain">nyx repro (--finding <span class="hljs-tag">&lt;<span class="hljs-name">ID</span>&gt;</span> | --spec-hash <span class="hljs-tag">&lt;<span class="hljs-name">HASH</span>&gt;</span> | --bundle <span class="hljs-tag">&lt;<span class="hljs-name">DIR</span>&gt;</span>) [OPTIONS]</code></pre>
+<p>Nyx writes repro bundles under the platform cache directory and keys them by
+<code>spec_hash</code>. The browser UI and scan output show <code>finding_id</code>, so
+<code>--finding</code> scans cached bundle manifests and replays the newest match.</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--finding &lt;ID&gt;</code></td>
+<td>Find the newest cached bundle whose manifest carries this stable finding ID</td>
+</tr>
+<tr>
+<td><code>--spec-hash &lt;HASH&gt;</code></td>
+<td>Replay an exact cache bundle by spec hash</td>
+</tr>
+<tr>
+<td><code>--bundle &lt;DIR&gt;</code></td>
+<td>Replay an explicit bundle directory</td>
+</tr>
+<tr>
+<td><code>--docker</code></td>
+<td>Run the bundle&#39;s Docker replay path (<code>./reproduce.sh --docker</code>)</td>
+</tr>
+<tr>
+<td><code>--print-path</code></td>
+<td>Print the resolved bundle path and exit without replaying</td>
+</tr>
+<tr>
+<td><code>--list</code></td>
+<td>With <code>--finding</code>, list all matching cached bundles newest first</td>
+</tr>
+</tbody></table>
+<p>Examples:</p>
+<pre><code class="hljs language-bash">nyx repro --finding b9caa35df2213040
+nyx repro --finding b9caa35df2213040 --docker
+nyx repro --finding b9caa35df2213040 --print-path
+nyx repro --spec-hash 8bca7f8e0311d6c9
+nyx repro --bundle /path/to/repro/8bca7f8e0311d6c9</code></pre>
+<p>Exit codes mirror <code>reproduce.sh</code>: <code>0</code> pass, <code>1</code> replay mismatch, <code>2</code> Docker
+unavailable, <code>3</code> process-backend toolchain mismatch. Any other script exit is
+passed through.</p>
 <hr>
 <h2 id="nyx-index"><a class="docs-anchor" href="#nyx-index" aria-label="Link to nyx-index" data-pagefind-ignore>#</a><code>nyx index</code></h2>
 <p>Manage the SQLite file index.</p>
@@ -1006,7 +1062,7 @@ nyx rules list --json | jq <span class="hljs-string">&#x27;.[] | select(.cap == 
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

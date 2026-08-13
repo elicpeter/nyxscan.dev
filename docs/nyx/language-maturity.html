@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Language Maturity Matrix | Nyx docs</title>
-    <meta name="description" content="Nyx supports ten languages, but support depth is not uniform. This page gives an honest per-language picture so you can calibrate expectations before..." />
+    <meta name="description" content="Nyx supports ten languages at uneven depth. Calibrate expectations here before depending on Nyx for a given stack." />
     <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Coverage, Language Maturity Matrix, CVE, Python, JavaScript, TypeScript" />
     <meta name="author" content="Eli Peter" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -24,13 +24,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Language Maturity Matrix" />
-    <meta property="og:description" content="Nyx supports ten languages, but support depth is not uniform. This page gives an honest per-language picture so you can calibrate expectations before..." />
+    <meta property="og:description" content="Nyx supports ten languages at uneven depth. Calibrate expectations here before depending on Nyx for a given stack." />
     <meta property="og:url" content="https://nyxsec.dev/docs/nyx/language-maturity" />
     <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
     <meta property="og:image:type" content="image/png" />
@@ -39,7 +41,7 @@
     <meta property="og:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Language Maturity Matrix" />
-    <meta name="twitter:description" content="Nyx supports ten languages, but support depth is not uniform. This page gives an honest per-language picture so you can calibrate expectations before..." />
+    <meta name="twitter:description" content="Nyx supports ten languages at uneven depth. Calibrate expectations here before depending on Nyx for a given stack." />
     <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
     <meta name="twitter:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="theme-color" content="#F9F8F4" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -165,7 +167,7 @@
       "headline": "Language Maturity Matrix",
       "name": "Language Maturity Matrix",
       "url": "https://nyxsec.dev/docs/nyx/language-maturity",
-      "description": "Nyx supports ten languages, but support depth is not uniform. This page gives an honest per-language picture so you can calibrate expectations before...",
+      "description": "Nyx supports ten languages at uneven depth. Calibrate expectations here before depending on Nyx for a given stack.",
       "inLanguage": "en-US",
       "articleSection": "Coverage",
       "isPartOf": {
@@ -256,31 +258,28 @@
   </div>
           <div class="docs-prose" data-pagefind-body>
 <h1 id="language-maturity-matrix"><a class="docs-anchor" href="#language-maturity-matrix" aria-label="Link to language-maturity-matrix" data-pagefind-ignore>#</a>Language Maturity Matrix</h1>
-<p>Nyx supports ten languages, but support depth is not uniform. This page gives an
-honest per-language picture so you can calibrate expectations before depending
-on Nyx for a given stack.</p>
-<p>The classifications here are grounded in three concrete signals:</p>
+<p>Nyx supports ten languages at uneven depth. Calibrate expectations here before
+depending on Nyx for a given stack.</p>
+<p>Three signals drive the classifications:</p>
 <ol>
-<li><strong>Rule depth</strong>: how many distinct source / sanitizer / sink matchers exist
-for the language in <code>src/labels/&lt;lang&gt;.rs</code>, and how many vulnerability
-classes (Cap bits) those matchers cover.</li>
-<li><strong>Benchmark results</strong>: rule-level precision / recall / F1 on the synthetic
-corpus in
-<a href="https://github.com/elicpeter/nyx/blob/master/tests/benchmark/RESULTS.md"><code>tests/benchmark/RESULTS.md</code></a>.
-<code>RESULTS.md</code> is the authoritative case counts and per-language scores.</li>
-<li><strong>Known weak spots</strong>: FPs and FNs the maintainers have deliberately left
-in the benchmark rather than suppressed, plus structural engine
-limitations the corpus does not stress, documented in
-<a href="https://github.com/elicpeter/nyx/blob/master/tests/benchmark/RESULTS.md"><code>RESULTS.md</code></a>.</li>
+<li>Rule depth: how many source / sanitizer / sink matchers the language has in
+<code>src/labels/&lt;lang&gt;.rs</code>, and how many vulnerability classes (Cap bits) they
+cover.</li>
+<li>Benchmark results: rule-level precision / recall / F1 on the synthetic
+corpus, scored in
+<a href="https://github.com/nyx-sec/nyx/blob/master/tests/benchmark/RESULTS.md"><code>tests/benchmark/RESULTS.md</code></a>,
+authoritative for case counts and per-language scores.</li>
+<li>Known weak spots, also in <code>RESULTS.md</code>: FPs and FNs the maintainers
+deliberately left in the benchmark rather than suppressing, plus structural
+engine limitations the corpus does not stress.</li>
 </ol>
-<p>The synthetic corpus has effectively saturated: every
-real-CVE fixture fires and rule-level precision and recall are both 100%.
-All ten languages report rule-level F1 = 100.0%. Aggregate rule-level
-P=1.000, R=1.000, F1=1.000. That means F1 alone no longer differentiates
-tiers, so the differentiators are <strong>rule depth</strong>, <strong>gated-sink coverage</strong>,
-and <strong>structural idioms the corpus does not fully stress</strong> (deep pointer
-aliasing in C/C++, framework-specific context). All parser integrations
-use tree-sitter and are stable; parsing is not a differentiator.</p>
+<p>The corpus has saturated: every real-CVE fixture fires, rule-level precision
+and recall are both 100%, all ten languages report rule-level F1 = 100.0%, and
+the aggregate is P=1.000, R=1.000, F1=1.000. F1 no longer separates tiers;
+rule depth, gated-sink coverage, and structural idioms the corpus does not
+fully stress (deep pointer aliasing in C/C++, framework-specific context) do.
+All parser integrations use tree-sitter and are stable, so parsing is not a
+differentiator.</p>
 <hr>
 <h2 id="tier-summary"><a class="docs-anchor" href="#tier-summary" aria-label="Link to tier-summary" data-pagefind-ignore>#</a>Tier Summary</h2>
 <table>
@@ -296,278 +295,264 @@ use tree-sitter and are stable; parsing is not a differentiator.</p>
 <td><strong>Stable</strong></td>
 <td>Python, JavaScript, TypeScript</td>
 <td>100%</td>
-<td>Deep rule sets, gated sinks (argument-role-aware), framework detection, extensive fixtures, and the bulk of advanced-analysis (SSA two-level solve, context-sensitivity, symbolic execution, abstract interpretation) coverage. Safe to depend on in CI gates.</td>
+<td>Deep rule sets, gated sinks (argument-role-aware), framework detection, extensive fixtures, and most advanced-analysis coverage (SSA two-level solve, context-sensitivity, symbolic execution, abstract interpretation). Safe to depend on in CI gates, with strict <code>--fail-on HIGH</code>.</td>
 </tr>
 <tr>
 <td><strong>Beta</strong></td>
 <td>Go, Java, PHP, Ruby, Rust</td>
 <td>100%</td>
-<td>Solid mid-depth rule sets with narrower cap coverage and <strong>no gated sinks</strong>. Cross-file flows work; some idioms (variable-typed method receivers, framework context, string interpolation, match-arm guards) are partially modeled. Usable in CI; review FP/FN lists before tightening gates.</td>
+<td>Mid-depth rule sets with narrower cap coverage and <strong>no gated sinks</strong>. Cross-file flows work; some idioms (variable-typed method receivers, framework context, string interpolation, match-arm guards) are partially modeled. Usable in CI; review FP/FN lists before tightening gates.</td>
 </tr>
 <tr>
 <td><strong>Preview</strong></td>
 <td>C, C++</td>
 <td>100% on synthetic corpus</td>
-<td>Recent work taught the engine to follow taint through <code>std::vector</code> / <code>std::string</code> / map containers (including <code>c_str()</code>), through fluent builder chains like <code>Socket::builder().host(h).connect()</code>, and through inline class member functions. Function pointers and deeper pointer aliasing through <code>*p</code> / <code>p-&gt;field</code> are still not tracked. Rule-level scores against a corpus of obvious unsafe-API uses look perfect, but that is not the same as a clean audit on a real codebase. Pair with clang-tidy, Clang Static Analyzer, or Infer.</td>
+<td>Taint follows STL containers (including <code>c_str()</code>), fluent builder chains, and inline class member functions; function pointers and deeper aliasing through <code>*p</code> / <code>p-&gt;field</code> are not tracked. Perfect scores on obvious unsafe-API uses are not a clean audit of a real codebase. Pair with clang-tidy, Clang Static Analyzer, or Infer. See <a href="#preview-tier">Preview tier</a>.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="rule-coverage"><a class="docs-anchor" href="#rule-coverage" aria-label="Link to rule-coverage" data-pagefind-ignore>#</a>Rule Coverage</h2>
+<p>Classes are the vulnerability classes with source / sanitizer / sink matchers in
+each label file.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Label file</th>
+<th>Classes</th>
+<th>Framework context</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Python</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/python.rs"><code>python.rs</code></a></td>
+<td>Deep: HTML, URL, Shell, SQL, Code, SSRF, File I/O, Deserialization</td>
+<td>Flask, Django, argparse source matchers; <code>flask_request</code> import-alias support</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/javascript.rs"><code>javascript.rs</code></a></td>
+<td>Deep: HTML, URL, JSON, Shell, SQL, Code, SSRF, File I/O</td>
+<td>Express, Koa, Fastify (in-file import scan when <code>package.json</code> is absent)</td>
+</tr>
+<tr>
+<td>TypeScript</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/typescript.rs"><code>typescript.rs</code></a></td>
+<td>Shares the JS ruleset, plus TS-specific grammar handling</td>
+<td>Fastify via <code>detect_in_file_frameworks</code> (import-driven, no <code>package.json</code> required)</td>
+</tr>
+<tr>
+<td>Go</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/go.rs"><code>go.rs</code></a></td>
+<td>Mid-depth: HTML, URL, Shell, SQL, SSRF, Crypto, File I/O</td>
+<td>Gin, Echo source matchers</td>
+</tr>
+<tr>
+<td>Java</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/java.rs"><code>java.rs</code></a></td>
+<td>Mid-depth: HTML, URL, Shell, SQL, Code, SSRF, Deserialization</td>
+<td>Spring, JPA, Hibernate ORM rules; JNDI injection sinks</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/php.rs"><code>php.rs</code></a></td>
+<td>HTML, URL, Shell, SQL, Code, SSRF, File I/O, Deserialization; <code>$_GET</code> / <code>$_POST</code> / <code>$_REQUEST</code> superglobal sources</td>
+<td>Limited: Laravel raw methods only</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/ruby.rs"><code>ruby.rs</code></a></td>
+<td>HTML, Shell, SQL, Code, SSRF, File I/O, Deserialization</td>
+<td>Rails helpers (<code>sanitize_sql</code>, <code>permit</code>, <code>require</code>)</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/rust.rs"><code>rust.rs</code></a></td>
+<td>HTML, Shell, SQL, SSRF, Deserialization, File I/O</td>
+<td>Axum, Actix, Rocket; widest source-side framework coverage of any language</td>
+</tr>
+<tr>
+<td>C</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/c.rs"><code>c.rs</code></a></td>
+<td>Sinks: Shell, File, SSRF, Format-String. Sanitizers: <code>sanitize_*</code> prefix and numeric-parse functions only</td>
+<td>None</td>
+</tr>
+<tr>
+<td>C++</td>
+<td><a href="https://github.com/nyx-sec/nyx/blob/master/src/labels/cpp.rs"><code>cpp.rs</code></a></td>
+<td>C ruleset plus <code>std::cin</code> / <code>std::getline</code> sources and a wider numeric-sanitizer set covering the full <code>std::sto*</code> family</td>
+<td>None</td>
 </tr>
 </tbody></table>
 <hr>
 <h2 id="per-language-detail"><a class="docs-anchor" href="#per-language-detail" aria-label="Link to per-language-detail" data-pagefind-ignore>#</a>Per-Language Detail</h2>
 <h3 id="stable-tier"><a class="docs-anchor" href="#stable-tier" aria-label="Link to stable-tier" data-pagefind-ignore>#</a>Stable tier</h3>
 <h4 id="python"><a class="docs-anchor" href="#python" aria-label="Link to python" data-pagefind-ignore>#</a>Python</h4>
-<ul>
-<li><strong>Rule depth</strong>: deep source / sanitizer / sink coverage in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/python.rs"><code>src/labels/python.rs</code></a>
-spanning HTML, URL, Shell, SQL, Code, SSRF, File I/O, and Deserialization.</li>
-<li><strong>Framework context</strong>: Flask, Django, argparse source matchers; <code>flask_request</code>
-import-alias support.</li>
-<li><strong>Advanced analysis</strong>: gated sinks (<code>Popen</code>, <code>subprocess.run/call</code> with
-activation-arg awareness), most SSA-equivalence and symbolic-execution
-fixtures target Python.</li>
-<li><strong>Fixtures</strong>: extensive <code>.py</code> coverage under <code>tests/fixtures/</code> plus the benchmark cases.</li>
-<li><strong>Blind spots</strong>: f-string interpolation is not explicitly modeled as a
-distinct taint-producing construct; string-formatting flows are caught by
-the general concatenation path.</li>
-</ul>
+<p>Gated sinks cover <code>Popen</code> and <code>subprocess.run/call</code> with activation-arg
+awareness. Most SSA-equivalence and symbolic-execution fixtures target Python,
+on top of extensive <code>.py</code> coverage under <code>tests/fixtures/</code> and the benchmark
+cases.</p>
+<p>Blind spot: f-string interpolation is not explicitly modeled as a distinct
+taint-producing construct, so string-formatting flows are caught by the general
+concatenation path.</p>
 <h4 id="javascript"><a class="docs-anchor" href="#javascript" aria-label="Link to javascript" data-pagefind-ignore>#</a>JavaScript</h4>
-<ul>
-<li><strong>Rule depth</strong>: deep source / sanitizer / sink coverage in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/javascript.rs"><code>src/labels/javascript.rs</code></a>
-spanning HTML, URL, JSON, Shell, SQL, Code, SSRF, and File I/O.</li>
-<li><strong>Advanced analysis</strong>: gated sinks (<code>setAttribute</code>, <code>parseFromString</code>),
-two-level SSA solve for top-level + per-function scopes
-(<code>analyse_ssa_js_two_level</code>), prefix-locked SSRF suppression via
-StringFact, abstract-interpretation interval tracking.</li>
-<li><strong>Framework context</strong>: Express, Koa, Fastify (via in-file import scan when
-<code>package.json</code> is absent).</li>
-<li><strong>Fixtures</strong>: the largest <code>.js</code> set under <code>tests/fixtures/</code> of any
-language.</li>
-<li><strong>Blind spots</strong>: template literals are lowered through concatenation rather
-than modeled as a first-class taint operator; dynamic property access
-(<code>obj[user]</code>) is conservatively treated.</li>
-</ul>
+<p>Gated sinks (<code>setAttribute</code>, <code>parseFromString</code>), two-level SSA solve over
+top-level plus per-function scopes (<code>analyse_ssa_js_two_level</code>), prefix-locked
+SSRF suppression via StringFact, abstract-interpretation interval tracking.
+<code>tests/fixtures/</code> holds the largest <code>.js</code> set of any language.</p>
+<p>Blind spots: template literals lower through concatenation rather than a
+first-class taint operator, and dynamic property access (<code>obj[user]</code>) is
+conservatively treated.</p>
 <h4 id="typescript"><a class="docs-anchor" href="#typescript" aria-label="Link to typescript" data-pagefind-ignore>#</a>TypeScript</h4>
-<ul>
-<li><strong>Rule depth</strong>: shares the JS ruleset (see
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/typescript.rs"><code>src/labels/typescript.rs</code></a>)
-plus TS-specific grammar handling.</li>
-<li><strong>Advanced analysis</strong>: TSX and JSX grammars wired;
-discriminated-union narrowing, generic erasure, decorator flow, and
-interface dispatch are all validated against adversarial type-system
-stressors.</li>
-<li><strong>Framework context</strong>: Fastify detection via <code>detect_in_file_frameworks</code>
-(import-driven, no <code>package.json</code> required).</li>
-<li><strong>Fixtures</strong>: dedicated <code>.ts</code> / <code>.tsx</code> set under <code>tests/fixtures/</code> plus the benchmark cases.</li>
-<li><strong>Blind spots</strong>: <code>as any</code> casts and <code>any</code>-typed flows are handled
-conservatively (treated as tainted).</li>
-</ul>
+<p>TSX and JSX grammars are wired, and discriminated-union narrowing, generic
+erasure, decorator flow, and interface dispatch are validated against
+adversarial type-system stressors. Fixtures: a dedicated <code>.ts</code> / <code>.tsx</code> set
+under <code>tests/fixtures/</code> plus the benchmark cases.</p>
+<p>Blind spot: <code>as any</code> casts and <code>any</code>-typed flows are handled conservatively,
+treated as tainted.</p>
 <h3 id="beta-tier"><a class="docs-anchor" href="#beta-tier" aria-label="Link to beta-tier" data-pagefind-ignore>#</a>Beta tier</h3>
 <h4 id="go"><a class="docs-anchor" href="#go" aria-label="Link to go" data-pagefind-ignore>#</a>Go</h4>
-<ul>
-<li><strong>Rule depth</strong>: mid-depth source / sanitizer / sink coverage in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/go.rs"><code>src/labels/go.rs</code></a>
-covering HTML, URL, Shell, SQL, SSRF, Crypto, and File I/O.</li>
-<li><strong>Framework context</strong>: Gin, Echo source matchers.</li>
-<li><strong>Recent fix</strong>: <code>strings.ReplaceAll</code> is now recognised as a CMDi sanitiser
-in chain-wrapper / call-site-replace shapes, clearing the last open
-Go safe-fixture FP (<code>go-safe-009</code>, <code>validate(s string)</code> wrapping a
-<code>strings.ReplaceAll</code> over <code>;</code>).</li>
-<li><strong>Known gaps</strong>: no gated sinks, no deserialization class. <code>fmt.Sprintf</code>
-is deliberately not a sink. Cap coverage is narrower than the Stable
-tier and argument-role-aware sink modeling is not yet implemented for Go,
-so production CI gates may surface additional FPs the corpus does not
-exercise.</li>
-</ul>
+<p>A recent fix recognises <code>strings.ReplaceAll</code> as a CMDi sanitiser in
+chain-wrapper / call-site-replace shapes, clearing the last open Go
+safe-fixture FP (<code>go-safe-009</code>, <code>validate(s string)</code> wrapping a
+<code>strings.ReplaceAll</code> over <code>;</code>).</p>
+<p>Gaps: no gated sinks, no deserialization class, and <code>fmt.Sprintf</code> is
+deliberately not a sink. Cap coverage is narrower than the Stable tier and
+argument-role-aware sink modeling is not yet implemented for Go, so production
+CI gates may surface additional FPs the corpus does not exercise.</p>
 <h4 id="java"><a class="docs-anchor" href="#java" aria-label="Link to java" data-pagefind-ignore>#</a>Java</h4>
-<ul>
-<li><strong>Rule depth</strong>: mid-depth source / sanitizer / sink coverage in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/java.rs"><code>src/labels/java.rs</code></a>
-covering HTML, URL, Shell, SQL, Code, SSRF, and Deserialization.</li>
-<li><strong>Framework context</strong>: Spring, JPA, Hibernate ORM rules; JNDI injection
-sinks.</li>
-<li><strong>Known gaps</strong>: no gated sinks. Variable-receiver method calls
-(<code>client.send(...)</code> vs <code>HttpClient.send(...)</code>) rely on type-qualified
-resolution from receiver-type inference; flows where the receiver type
-cannot be inferred are conservatively over-tainted on unusual builder
-chains.</li>
-</ul>
+<p>Gaps: no gated sinks. Variable-receiver method calls (<code>client.send(...)</code> vs
+<code>HttpClient.send(...)</code>) rely on type-qualified resolution from receiver-type
+inference; flows where the receiver type cannot be inferred are conservatively
+over-tainted on unusual builder chains.</p>
 <h4 id="php"><a class="docs-anchor" href="#php" aria-label="Link to php" data-pagefind-ignore>#</a>PHP</h4>
-<ul>
-<li><strong>Rule depth</strong>: sources include <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>
-superglobals plus sanitizer / sink matchers in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/php.rs"><code>src/labels/php.rs</code></a>
-covering HTML, URL, Shell, SQL, Code, SSRF, File I/O, and Deserialization.</li>
-<li><strong>Known gaps</strong>: no gated sinks. Limited framework context (Laravel raw
-methods only). <code>echo</code> language-construct detection is wired but its
-inner-argument propagation is narrower than function-call sinks.</li>
-</ul>
+<p>Gaps: no gated sinks. <code>echo</code> language-construct detection is wired, but its
+inner-argument propagation is narrower than function-call sinks.</p>
 <h4 id="ruby"><a class="docs-anchor" href="#ruby" aria-label="Link to ruby" data-pagefind-ignore>#</a>Ruby</h4>
-<ul>
-<li><strong>Rule depth</strong>: source / sanitizer / sink coverage in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/ruby.rs"><code>src/labels/ruby.rs</code></a>
-covering HTML, Shell, SQL, Code, SSRF, File I/O, and Deserialization. SSRF
-coverage includes <code>URI.open</code> and the low-level <code>OpenURI.open_uri</code> it
-delegates to (the canonical CarrierWave CVE-2021-21288 sink).
-Statement-level chained-call wrappers
-(<code>YAML.safe_load(File.read(filename))</code>, <code>Marshal.load(File.read(p))</code>,
-<code>String.new(File.read(x))</code>) classify the inner sink for cross-function
-summary extraction so the outer call does not strip the sink classification
-on the helper.</li>
-<li><strong>Framework context</strong>: Rails helpers (<code>sanitize_sql</code>, <code>permit</code>, <code>require</code>).</li>
-<li><strong>Known gaps</strong>: string interpolation inside shell and SQL strings is
-recognized structurally but not modeled as a distinct operator.
-<code>begin/rescue/ensure</code> exception-edge wiring is not implemented.</li>
-</ul>
+<p>SSRF coverage includes <code>URI.open</code> and the low-level <code>OpenURI.open_uri</code> it
+delegates to (the canonical CarrierWave CVE-2021-21288 sink). Statement-level
+chained-call wrappers (<code>YAML.safe_load(File.read(filename))</code>,
+<code>Marshal.load(File.read(p))</code>, <code>String.new(File.read(x))</code>) classify the inner
+sink for cross-function summary extraction, so the outer call does not strip
+the sink classification on the helper.</p>
+<p>Gaps: string interpolation inside shell and SQL strings is recognized
+structurally but not modeled as a distinct operator, and <code>begin/rescue/ensure</code>
+exception-edge wiring is not implemented.</p>
 <h4 id="rust"><a class="docs-anchor" href="#rust" aria-label="Link to rust" data-pagefind-ignore>#</a>Rust</h4>
-<p>Rust holds the largest per-language adversarial corpus. PathFact-driven
-path-domain narrowing covers the <code>rs-safe-*</code> regression set.</p>
-<ul>
-<li><strong>Rule depth</strong>: source / sanitizer / sink coverage in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/rust.rs"><code>src/labels/rust.rs</code></a>
-covering HTML, Shell, SQL, SSRF, Deserialization, and File I/O.
-Extensive framework source coverage (Axum, Actix, Rocket); the most of
-any language on the source side. The narrow sanitizer rule set (prefix
-and type-coercion only) is the primary reason Rust is not in the Stable
-tier. Engine-side path/typed sanitizer recognition (PathFact)
-compensates, but the ruleset itself is shallow.</li>
-<li><strong>Coverage</strong>: SQL class (<code>rusqlite</code>, <code>sqlx</code>, <code>diesel</code>, <code>postgres</code>),
-Deserialization class (<code>serde_yaml</code>, <code>bincode</code>, <code>rmp_serde</code>, <code>ciborium</code>,
-<code>ron</code>, <code>toml</code>), file I/O (<code>fs::remove_file/dir/rename/copy</code>), and the
-<code>reqwest</code> SSRF builder chain.</li>
-<li><strong>PathFact-narrowed shapes</strong> (<code>src/abstract_interp/path_domain.rs</code> plus
+<p>Rust holds the largest per-language adversarial corpus, and PathFact-driven
+path-domain narrowing covers the <code>rs-safe-*</code> regression set. The narrow
+sanitizer rule set (prefix and type-coercion only) is the primary reason Rust
+is not Stable: engine-side path/typed sanitizer recognition (PathFact)
+compensates, but the ruleset itself is shallow.</p>
+<p>Class coverage: SQL (<code>rusqlite</code>, <code>sqlx</code>, <code>diesel</code>, <code>postgres</code>),
+Deserialization (<code>serde_yaml</code>, <code>bincode</code>, <code>rmp_serde</code>, <code>ciborium</code>, <code>ron</code>,
+<code>toml</code>), file I/O (<code>fs::remove_file/dir/rename/copy</code>), and the <code>reqwest</code> SSRF
+builder chain.</p>
+<p>PathFact-narrowed shapes (<code>src/abstract_interp/path_domain.rs</code> plus
 per-return-path PathFact entries on <code>SsaFuncSummary</code>) cover
-<code>.replace(&quot;..&quot;,&quot;&quot;)</code> sanitisers, negative-validation returns, match-arm
-guards via condition lifting, static-map lookups,
-<code>.contains(&quot;..&quot;)</code> + <code>.starts_with(&#39;/&#39;)</code> rejection, Option-returning
-user sanitisers, <code>Path::new(p).is_absolute()</code> typed rejection,
-cross-function <code>.contains(&quot;..&quot;)</code> rejection, and the
-<code>CVE-2018-20997</code> / <code>CVE-2022-36113</code> / <code>CVE-2024-24576</code> patch shapes.</li>
-<li><strong>Not yet covered</strong>: unsafe FFI / <code>std::mem::transmute</code> (no rules), Tokio
-<code>process::Command</code> async variants (not distinguished from sync),
-<code>hyper</code> / <code>surf</code> / <code>ureq</code> SSRF clients (reqwest family only).</li>
-</ul>
+<code>.replace(&quot;..&quot;,&quot;&quot;)</code> sanitisers, negative-validation returns, match-arm guards
+via condition lifting, static-map lookups, <code>.contains(&quot;..&quot;)</code> +
+<code>.starts_with(&#39;/&#39;)</code> rejection, Option-returning user sanitisers,
+<code>Path::new(p).is_absolute()</code> typed rejection, cross-function <code>.contains(&quot;..&quot;)</code>
+rejection, and the <code>CVE-2018-20997</code> / <code>CVE-2022-36113</code> / <code>CVE-2024-24576</code>
+patch shapes.</p>
+<p>Not yet covered: unsafe FFI / <code>std::mem::transmute</code> (no rules), Tokio
+<code>process::Command</code> async variants (not distinguished from sync), and
+<code>hyper</code> / <code>surf</code> / <code>ureq</code> SSRF clients (reqwest family only).</p>
 <h3 id="preview-tier"><a class="docs-anchor" href="#preview-tier" aria-label="Link to preview-tier" data-pagefind-ignore>#</a>Preview tier</h3>
-<p>C and C++ remain <strong>Preview</strong> despite reporting 100% rule-level F1 on the
-synthetic corpus. The engine follows taint through STL containers, builder
-chains, inline member functions, and the wider <code>std::sto*</code> family, so the
-gap between &quot;passes the synthetic corpus&quot; and &quot;would catch the same flow
-on a real codebase&quot; is narrower than the synthetic numbers suggest. It is
-not zero. The biggest remaining gaps are deep pointer aliasing and function
-pointers, both of which are pervasive in real C/C++ code. Treat a clean
-report as a starting point, not an audit. Pair Nyx with clang-tidy, the
-Clang Static Analyzer, or Infer for production use.</p>
+<p>C and C++ remain <strong>Preview</strong> despite 100% rule-level F1 on the synthetic
+corpus. The engine now follows taint through the constructs listed below, so
+the gap between &quot;passes the synthetic corpus&quot; and &quot;would catch the same flow on
+a real codebase&quot; is narrower than the numbers suggest. It is not zero: deep
+pointer aliasing and function pointers are the biggest remaining gaps, and both
+are pervasive in real C/C++ code.</p>
 <p><strong>What works:</strong></p>
 <ul>
-<li>STL container flow. <code>vec.push_back(tainted)</code> followed by
-<code>vec.front().c_str()</code> carries taint into a downstream <code>system()</code> sink.
-<code>std::map::insert_or_assign</code>, <code>find</code>, <code>count</code>, <code>at</code>, and <code>data</code> all
-participate in the container store/load model.</li>
-<li>Inline class member functions. <code>class C { void run(...) { ... } };</code>
-bodies are now extracted as their own functions, so an intra-file call
-like <code>inner.run(input)</code> resolves to the body summary. Same fix covers
-<code>struct_specifier</code>, <code>union_specifier</code>, <code>enum_specifier</code>,
-<code>template_declaration</code>, and <code>extern &quot;C&quot;</code> blocks.</li>
-<li>Lambda passthrough. <code>auto echo = [](const char* s) { return s; };</code> carries
-argument taint into the result via the engine&#39;s default call-argument
-propagation.</li>
-<li>Builder chains. <code>Socket::builder().host(user).port(8080).connect()</code>
-resolves the chained returns and fires on <code>.connect()</code> when <code>user</code> is
-tainted; the safe variant with a hardcoded host stays quiet.</li>
-<li>Wider numeric sanitizer family. The full <code>std::sto*</code> set (including
-<code>stoll</code>, <code>stoull</code>, <code>stold</code>) and the C-stdlib forms (<code>atoi</code>, <code>atof</code>,
-<code>strtol</code>, etc.) clear all caps when they&#39;re called.</li>
-<li>More header / source extensions. <code>.cc</code>, <code>.cxx</code>, <code>.hpp</code>, <code>.hxx</code>, <code>.hh</code>,
-and <code>.h++</code> are recognized as C++ on top of <code>.cpp</code> and <code>.c++</code>. <code>.h</code> is
-intentionally still routed to C since it&#39;s ambiguous without a build
-system.</li>
+<li>STL container flow through <code>std::vector</code>, <code>std::string</code>, and map containers:
+<code>vec.push_back(tainted)</code> then <code>vec.front().c_str()</code> carries taint into a
+downstream <code>system()</code> sink. <code>std::map::insert_or_assign</code>, <code>find</code>, <code>count</code>,
+<code>at</code>, and <code>data</code> participate in the container store/load model.</li>
+<li>Inline class member functions: bodies of <code>class C { void run(...) { ... } };</code>
+become their own functions, so an intra-file <code>inner.run(input)</code> resolves to
+the body summary. Same for <code>struct_specifier</code>, <code>union_specifier</code>,
+<code>enum_specifier</code>, <code>template_declaration</code>, and <code>extern &quot;C&quot;</code> blocks.</li>
+<li>Lambda passthrough: <code>auto echo = [](const char* s) { return s; };</code> carries
+argument taint into the result via default call-argument propagation.</li>
+<li>Builder chains: <code>Socket::builder().host(user).port(8080).connect()</code> resolves
+the chained returns and fires on <code>.connect()</code> when <code>user</code> is tainted; the
+safe variant with a hardcoded host stays quiet.</li>
+<li>Numeric sanitizers: the full <code>std::sto*</code> set (<code>stoll</code>, <code>stoull</code>, <code>stold</code>
+included) and the C-stdlib forms (<code>atoi</code>, <code>atof</code>, <code>strtol</code>, etc.) clear all
+caps when called.</li>
+<li>Extensions: <code>.cc</code>, <code>.cxx</code>, <code>.hpp</code>, <code>.hxx</code>, <code>.hh</code>, and <code>.h++</code> are recognized
+as C++ alongside <code>.cpp</code> and <code>.c++</code>. <code>.h</code> still routes to C, intentionally,
+since it&#39;s ambiguous without a build system.</li>
 </ul>
 <p><strong>Still not modeled</strong> (common to both C and C++):</p>
 <ul>
-<li>Deep pointer aliasing. Taint through <code>*p</code>, <code>p-&gt;field</code>, and arbitrary
-pointer arithmetic is not tracked through arbitrary aliased writes.
-Field-sensitive points-to (see <a href="advanced-analysis">Advanced analysis</a>)
-handles the &quot;lock on a sub-field&quot; case but is not a general escape
-analysis.</li>
-<li>Function pointers and callback dispatch. An indirect call through
+<li>Deep pointer aliasing: taint through <code>*p</code>, <code>p-&gt;field</code>, and arbitrary pointer
+arithmetic is not tracked through arbitrary aliased writes. Field-sensitive
+points-to (see <a href="advanced-analysis">Advanced analysis</a>) handles the &quot;lock
+on a sub-field&quot; case but is not a general escape analysis.</li>
+<li>Function pointers and callback dispatch: an indirect call through
 <code>void (*fn)(char *)</code> resolves to no callee, so cross-pointer flows are
 invisible.</li>
-<li>Array-element taint by index. Writes to <code>buf[i]</code> do not always propagate
+<li>Array-element taint by index: writes to <code>buf[i]</code> do not always propagate
 taint to <code>buf</code> as a whole; subscript-handling helps the general case but
 doesn&#39;t make <code>buf</code> an alias for every element.</li>
 <li>Nested classes beyond one level (C++ only).</li>
 </ul>
 <h4 id="c"><a class="docs-anchor" href="#c" aria-label="Link to c" data-pagefind-ignore>#</a>C</h4>
-<ul>
-<li><strong>Rule depth</strong>: source / sanitizer / sink coverage in
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/c.rs"><code>src/labels/c.rs</code></a>.
-Sanitizers are limited to the <code>sanitize_*</code> prefix and numeric-parse
-functions; sinks span Shell, File, SSRF, and Format-String.</li>
-<li><strong>Known gaps</strong>: no framework rules, no gated sinks. The structural
-limitations listed above are the dominant concern; rule additions alone
-will not lift this language out of the Preview tier.</li>
-</ul>
+<p>Gaps: no framework rules, no gated sinks. The structural limitations above are
+the dominant concern, and rule additions alone will not lift C out of Preview.</p>
 <h4 id="c-2"><a class="docs-anchor" href="#c-2" aria-label="Link to c-2" data-pagefind-ignore>#</a>C++</h4>
-<ul>
-<li><strong>Rule depth</strong>: builds on the C ruleset (see
-<a href="https://github.com/elicpeter/nyx/blob/master/src/labels/cpp.rs"><code>src/labels/cpp.rs</code></a>)
-with <code>std::cin</code> / <code>std::getline</code> sources and a wider numeric-sanitizer
-set covering the full <code>std::sto*</code> family.</li>
-<li><strong>Known gaps</strong>: still no framework rules and no gated sinks. The
-structural blind spots are now narrower than they were a release ago
-(see &quot;What now works&quot; above), but function pointers and the harder
-pointer-aliasing patterns still produce false negatives.</li>
-</ul>
+<p>Gaps: still no framework rules and no gated sinks. The structural blind spots
+are narrower than they were a release ago (see the list above), but function
+pointers and the harder pointer-aliasing patterns still produce false
+negatives.</p>
 <hr>
 <h2 id="how-the-tiers-were-assigned"><a class="docs-anchor" href="#how-the-tiers-were-assigned" aria-label="Link to how-the-tiers-were-assigned" data-pagefind-ignore>#</a>How the tiers were assigned</h2>
-<p>Because rule-level F1 has saturated for nine of ten languages, the tier
-boundaries are drawn primarily on <strong>rule depth</strong> and <strong>engine coverage of
-real-world idioms</strong> rather than on benchmark scores alone.</p>
-<p>A language lands in <strong>Stable</strong> when all three hold:</p>
+<p>Because rule-level F1 has saturated for nine of ten languages, tier boundaries
+are drawn on rule depth and engine coverage of real-world idioms, not benchmark
+scores alone.</p>
+<p><strong>Stable</strong> requires all three:</p>
 <ul>
-<li>Rule set covers ≥ 8 vulnerability classes with both source and sink
-matchers, and at least one class has argument-role-aware <strong>gated-sink</strong>
-modeling (e.g. <code>setAttribute(&quot;href&quot;, url)</code> only flags href-like attrs).</li>
+<li>≥ 8 vulnerability classes with both source and sink matchers, and at least
+one class with argument-role-aware <strong>gated-sink</strong> modeling (e.g.
+<code>setAttribute(&quot;href&quot;, url)</code> only flags href-like attrs).</li>
 <li>Benchmark F1 ≥ 95% on a corpus of ≥ 25 cases.</li>
-<li>Advanced analysis (SSA lowering, context-sensitivity, symbolic execution,
-abstract interpretation) is exercised by fixtures for the language.</li>
+<li>Fixtures for the language that exercise advanced analysis (SSA lowering,
+context-sensitivity, symbolic execution, abstract interpretation).</li>
 </ul>
-<p>A language lands in <strong>Beta</strong> when benchmark F1 is in the mid-90s or higher
-on a meaningful corpus but at least one Stable criterion fails. Typical
-gaps: absence of gated sinks, or sanitizer rule depth narrow enough that
-the engine compensates structurally rather than via the ruleset.</p>
-<p>A language lands in <strong>Preview</strong> when the engine has documented structural
-blind spots for constructs that are pervasive in typical codebases for that
-language. For C and C++ that means deep pointer aliasing, function
-pointers, and array-element taint; STL container flow and builder chains
-have moved out of the blind-spot list. Synthetic-corpus F1 is not a
-reliable signal for Preview-tier languages: a clean report can coexist
-with structural gaps.</p>
-<p>(No language currently sits in the <strong>Experimental</strong> tier; it is reserved
-for future additions whose corpus has not yet stabilised.)</p>
+<p><strong>Beta</strong> is benchmark F1 in the mid-90s or higher on a meaningful corpus with
+at least one Stable criterion failing, usually no gated sinks or a sanitizer
+rule set narrow enough that the engine compensates structurally rather than via
+the ruleset.</p>
+<p><strong>Preview</strong> means documented structural blind spots for constructs pervasive in
+typical codebases for that language: for C and C++, deep pointer aliasing,
+function pointers, and array-element taint (STL container flow and builder
+chains have moved off that list). Synthetic-corpus F1 is not a reliable signal
+at this tier, since a clean report can coexist with structural gaps.</p>
+<p>No language currently sits in the <strong>Experimental</strong> tier; it is reserved for
+future additions whose corpus has not yet stabilised.</p>
 <hr>
 <h2 id="what-this-means-for-you"><a class="docs-anchor" href="#what-this-means-for-you" aria-label="Link to what-this-means-for-you" data-pagefind-ignore>#</a>What this means for you</h2>
-<ul>
-<li><strong>CI gates</strong>: safe to set strict <code>--fail-on HIGH</code> gates on Stable-tier
-languages. On Beta-tier, expect occasional FP triage on production code
-(the synthetic corpus does not cover every framework idiom); the
-weak-spot lists above tell you what to skim for. On Preview-tier, treat
-Nyx findings as a starting point for manual review rather than
-authoritative. STL container flow and builder chains are tracked now,
-but deep pointer aliasing and function pointers are not, so a clean
-report does not tell you what the engine could not see.</li>
-<li><strong>Rule contributions</strong>: the shortest path to raising a language&#39;s tier is
-contributing sink matchers and gated-sink registrations. Label files live
-at <code>src/labels/&lt;lang&gt;.rs</code>; benchmark cases live at
-<code>tests/benchmark/corpus/&lt;lang&gt;/</code>.</li>
-<li><strong>Scope planning</strong>: if your primary stack is C or C++, Nyx will surface
-real findings on obvious unsafe-API uses, but budget for review time and
-combine Nyx with <code>clang-tidy</code> or the Clang Static Analyzer. Rust is now
-Beta-tier and suitable as a CI gate; pair with <code>cargo-audit</code> for
-dependency CVEs.</li>
-</ul>
-<p>The benchmark thresholds in <code>tests/benchmark_test.rs</code> are deliberately set
-~5 pp below current baselines so any drop in a language&#39;s F1 fails CI. Tier
-promotions require sustained benchmark performance, not just rule additions.</p>
+<p>On Beta-tier languages, expect occasional FP triage on production code, since
+the synthetic corpus does not cover every framework idiom; the weak-spot lists
+above say what to skim for. On Preview-tier, treat findings as a starting point
+for manual review rather than authoritative: STL container flow and builder
+chains are tracked, deep pointer aliasing and function pointers are not, so a
+clean report does not tell you what the engine could not see.</p>
+<p>The shortest path to raising a language&#39;s tier is contributing sink matchers
+and gated-sink registrations. Label files live at <code>src/labels/&lt;lang&gt;.rs</code>,
+benchmark cases at <code>tests/benchmark/corpus/&lt;lang&gt;/</code>.</p>
+<p>With C or C++ as a primary stack, Nyx will surface real findings on obvious
+unsafe-API uses, but budget review time and combine it with <code>clang-tidy</code> or the
+Clang Static Analyzer. Rust is now Beta-tier and suitable as a CI gate; pair
+with <code>cargo-audit</code> for dependency CVEs.</p>
+<p>Benchmark thresholds in <code>tests/benchmark_test.rs</code> sit ~5 pp below current
+baselines, so any drop in a language&#39;s F1 fails CI. Tier promotions require
+sustained benchmark performance, not just rule additions.</p>
 
           </div>
           <nav class="docs-prevnext" aria-label="Page navigation"><a class="docs-prevnext__link docs-prevnext__link--prev" href="output">
@@ -599,7 +584,7 @@ promotions require sustained benchmark performance, not just rule additions.</p>
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

@@ -24,7 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -291,7 +293,7 @@
 </tr>
 </tbody></table>
 <h3 id="evidence-fields"><a class="docs-anchor" href="#evidence-fields" aria-label="Link to evidence-fields" data-pagefind-ignore>#</a>Evidence fields</h3>
-<p>Taint and state findings include structured evidence:</p>
+<p>Taint and state findings carry structured evidence:</p>
 <table>
 <thead>
 <tr>
@@ -300,29 +302,29 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Source</strong></td>
+<td>Source</td>
 <td>Where tainted data originated (function name + location)</td>
 </tr>
 <tr>
-<td><strong>Sink</strong></td>
+<td>Sink</td>
 <td>Where the dangerous operation happens</td>
 </tr>
 <tr>
-<td><strong>Path guard</strong></td>
+<td>Path guard</td>
 <td>Type of validation predicate protecting the path</td>
 </tr>
 </tbody></table>
 <h3 id="score"><a class="docs-anchor" href="#score" aria-label="Link to score" data-pagefind-ignore>#</a>Score</h3>
-<p>When attack-surface ranking is enabled (default), each finding shows a <code>Score</code> value. Higher scores indicate greater exploitability. See <a href="detectors">Detector Overview</a> for the scoring formula.</p>
+<p>With attack-surface ranking enabled (the default), each finding shows a <code>Score</code>; higher scores mean greater exploitability. Scoring formula: <a href="detectors">Detector Overview</a>.</p>
 <h3 id="rollup-findings"><a class="docs-anchor" href="#rollup-findings" aria-label="Link to rollup-findings" data-pagefind-ignore>#</a>Rollup findings</h3>
-<p>High-frequency LOW Quality findings (e.g. <code>rs.quality.unwrap</code>) are grouped into rollup findings by <code>(file, rule)</code>:</p>
+<p>High-frequency LOW Quality findings (e.g. <code>rs.quality.unwrap</code>) are grouped by <code>(file, rule)</code>:</p>
 <pre><code class="hljs language-plain">  <span class="hljs-number">21</span>:<span class="hljs-number">10</span>  ● <span class="hljs-selector-attr">[LOW]</span>   rs<span class="hljs-selector-class">.quality</span><span class="hljs-selector-class">.unwrap</span>
       rs<span class="hljs-selector-class">.quality</span><span class="hljs-selector-class">.unwrap</span> (<span class="hljs-number">38</span> occurrences)
       Examples: <span class="hljs-number">21</span>:<span class="hljs-number">10</span>, <span class="hljs-number">50</span>:<span class="hljs-number">10</span>, <span class="hljs-number">79</span>:<span class="hljs-number">10</span>, <span class="hljs-number">105</span>:<span class="hljs-number">10</span>, <span class="hljs-number">134</span>:<span class="hljs-number">10</span>
       Run: nyx scan <span class="hljs-attr">--show-instances</span> rs<span class="hljs-selector-class">.quality</span>.unwrap</code></pre>
-<p>Rollups count as <strong>one finding</strong> for LOW budget enforcement. Use <code>--show-instances &lt;RULE&gt;</code> to expand a specific rule or <code>--all</code> to disable rollups entirely.</p>
+<p>A rollup counts as <strong>one finding</strong> for LOW budget enforcement. <code>--show-instances &lt;RULE&gt;</code> expands a specific rule; <code>--all</code> disables rollups entirely.</p>
 <h3 id="suppression-footer"><a class="docs-anchor" href="#suppression-footer" aria-label="Link to suppression-footer" data-pagefind-ignore>#</a>Suppression footer</h3>
-<p>When findings are suppressed by the prioritization pipeline, a footer is shown:</p>
+<p>When the prioritization pipeline suppresses findings, a footer is shown:</p>
 <pre><code class="hljs language-plain"><span class="hljs-attribute">Suppressed</span> <span class="hljs-number">195</span> LOW/Quality findings.
 <span class="hljs-attribute">Active</span> filters:
   <span class="hljs-attribute">include_quality</span> = false
@@ -333,46 +335,91 @@
 <span class="hljs-attribute">Use</span> --include-quality, --max-low, or --<span class="hljs-literal">all</span> to adjust.</code></pre>
 <hr>
 <h2 id="json"><a class="docs-anchor" href="#json" aria-label="Link to json" data-pagefind-ignore>#</a>JSON</h2>
-<p>Machine-readable JSON array. Each finding is an object:</p>
-<pre><code class="hljs language-json"><span class="hljs-punctuation">[</span>
-  <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;src/handler.rs&quot;</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;line&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;col&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;High&quot;</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;taint-unsanitised-flow (source 5:11)&quot;</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;path_validated&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;labels&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
-      <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;Source&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;env::var(\&quot;CMD\&quot;) at 5:11&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;Sink&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;Command::new(\&quot;sh\&quot;).arg(\&quot;-c\&quot;)&quot;</span><span class="hljs-punctuation">]</span>
-    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;High&quot;</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;evidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-      <span class="hljs-attr">&quot;source&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;src/handler.rs&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;line&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;col&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">11</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;source&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;snippet&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;env::var(\&quot;CMD\&quot;)&quot;</span>
+<p>Machine-readable JSON object. The main keys are:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>findings</code></td>
+<td>array</td>
+<td>Finding objects</td>
+</tr>
+<tr>
+<td><code>chains</code></td>
+<td>array</td>
+<td>Composed exploit chains, when emitted</td>
+</tr>
+<tr>
+<td><code>dynamic_verification</code></td>
+<td>object</td>
+<td>Count of attached dynamic verdicts</td>
+</tr>
+<tr>
+<td><code>verdict_diff</code></td>
+<td>object</td>
+<td>Baseline comparison, only when <code>--baseline</code> is used</td>
+</tr>
+</tbody></table>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;findings&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+    <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;src/handler.rs&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;line&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;col&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;severity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;High&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;taint-unsanitised-flow (source 5:11)&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;path_validated&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;labels&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;Source&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;env::var(\&quot;CMD\&quot;) at 5:11&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;Sink&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;Command::new(\&quot;sh\&quot;).arg(\&quot;-c\&quot;)&quot;</span><span class="hljs-punctuation">]</span>
+      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;confidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;High&quot;</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;evidence&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;source&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;src/handler.rs&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;line&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;col&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">11</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;source&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;snippet&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;env::var(\&quot;CMD\&quot;)&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;sink&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;src/handler.rs&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;line&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;col&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;sink&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;snippet&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Command::new(\&quot;sh\&quot;)&quot;</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;notes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;source_kind:EnvironmentConfig&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;dynamic_verdict&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+          <span class="hljs-attr">&quot;finding_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;a3b12f0c91e04420&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Confirmed&quot;</span><span class="hljs-punctuation">,</span>
+          <span class="hljs-attr">&quot;triggered_payload&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;cmdi-echo-marker&quot;</span>
+        <span class="hljs-punctuation">}</span>
       <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;sink&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;src/handler.rs&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;line&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;col&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;sink&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;snippet&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Command::new(\&quot;sh\&quot;)&quot;</span>
-      <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;notes&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;source_kind:EnvironmentConfig&quot;</span><span class="hljs-punctuation">]</span>
-    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;rank_score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">76.0</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;rank_reason&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
-      <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;severity_base&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;60&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;analysis_kind&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;10&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;source_kind&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;5&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;evidence_count&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;1&quot;</span><span class="hljs-punctuation">]</span>
-    <span class="hljs-punctuation">]</span>
+      <span class="hljs-attr">&quot;rank_score&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">76.0</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;rank_reason&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;severity_base&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;60&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;analysis_kind&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;10&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;source_kind&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;5&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;evidence_count&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;1&quot;</span><span class="hljs-punctuation">]</span>
+      <span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;chains&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;dynamic_verification&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;total&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;confirmed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;partially_confirmed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;not_confirmed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;inconclusive&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;unsupported&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span>
   <span class="hljs-punctuation">}</span>
-<span class="hljs-punctuation">]</span></code></pre>
+<span class="hljs-punctuation">}</span></code></pre>
 <h3 id="field-descriptions"><a class="docs-anchor" href="#field-descriptions" aria-label="Link to field-descriptions" data-pagefind-ignore>#</a>Field descriptions</h3>
 <table>
 <thead>
@@ -473,6 +520,12 @@
 <td>no</td>
 <td>Rollup data when findings are grouped (see below)</td>
 </tr>
+<tr>
+<td><code>chain_member_of</code></td>
+<td>int</td>
+<td>no</td>
+<td>Stable hash of the emitted chain this finding belongs to</td>
+</tr>
 </tbody></table>
 <p>Fields marked &quot;no&quot; are omitted when empty/null/false to keep output compact.</p>
 <h3 id="confidence-levels"><a class="docs-anchor" href="#confidence-levels" aria-label="Link to confidence-levels" data-pagefind-ignore>#</a>Confidence levels</h3>
@@ -497,7 +550,7 @@
 </tr>
 </tbody></table>
 <h3 id="evidence-object"><a class="docs-anchor" href="#evidence-object" aria-label="Link to evidence-object" data-pagefind-ignore>#</a>Evidence object</h3>
-<p>The <code>evidence</code> field provides structured provenance data:</p>
+<p><code>evidence</code> carries structured provenance data:</p>
 <table>
 <thead>
 <tr>
@@ -536,10 +589,85 @@
 <td>array</td>
 <td>Free-form notes (e.g. <code>&quot;source_kind:UserInput&quot;</code>, <code>&quot;path_validated&quot;</code>)</td>
 </tr>
+<tr>
+<td><code>dynamic_verdict</code></td>
+<td>object</td>
+<td>Dynamic verification result, when verification ran or was skipped for a typed reason</td>
+</tr>
 </tbody></table>
 <p>All fields are omitted when empty/null.</p>
+<h3 id="dynamic-verdict-object"><a class="docs-anchor" href="#dynamic-verdict-object" aria-label="Link to dynamic-verdict-object" data-pagefind-ignore>#</a>Dynamic verdict object</h3>
+<p><code>evidence.dynamic_verdict</code> uses this shape:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>finding_id</code></td>
+<td>string</td>
+<td>Stable 16-character hex finding id</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>string</td>
+<td><code>Confirmed</code>, <code>PartiallyConfirmed</code>, <code>NotConfirmed</code>, <code>Inconclusive</code>, or <code>Unsupported</code></td>
+</tr>
+<tr>
+<td><code>triggered_payload</code></td>
+<td>string</td>
+<td>Payload label for <code>Confirmed</code> verdicts</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td>object/string</td>
+<td>Typed reason for <code>Unsupported</code></td>
+</tr>
+<tr>
+<td><code>inconclusive_reason</code></td>
+<td>object/string</td>
+<td>Typed reason for <code>Inconclusive</code></td>
+</tr>
+<tr>
+<td><code>detail</code></td>
+<td>string</td>
+<td>Extra build, sandbox, or policy detail</td>
+</tr>
+<tr>
+<td><code>attempts</code></td>
+<td>array</td>
+<td>Per-payload attempt summaries</td>
+</tr>
+<tr>
+<td><code>toolchain_match</code></td>
+<td>string</td>
+<td><code>exact</code> or <code>drift</code></td>
+</tr>
+<tr>
+<td><code>differential</code></td>
+<td>object</td>
+<td>Vulnerable versus benign control result, when both ran</td>
+</tr>
+<tr>
+<td><code>hardening_outcome</code></td>
+<td>object</td>
+<td>Process-backend hardening result, when recorded</td>
+</tr>
+</tbody></table>
+<p>The top-level <code>dynamic_verification</code> object counts verdict statuses across the emitted findings:</p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;total&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">4</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;confirmed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;partially_confirmed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;not_confirmed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;inconclusive&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;unsupported&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span>
+<span class="hljs-punctuation">}</span></code></pre>
 <h3 id="rollup-object"><a class="docs-anchor" href="#rollup-object" aria-label="Link to rollup-object" data-pagefind-ignore>#</a>Rollup object</h3>
-<p>When a finding is a rollup (grouped from multiple occurrences), the <code>rollup</code> field is present:</p>
+<p>Findings grouped from multiple occurrences carry a <code>rollup</code> field:</p>
 <pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;rollup&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
     <span class="hljs-attr">&quot;count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">38</span><span class="hljs-punctuation">,</span>
@@ -573,15 +701,14 @@
 <h2 id="sarif-static-analysis-results-interchange-format"><a class="docs-anchor" href="#sarif-static-analysis-results-interchange-format" aria-label="Link to sarif-static-analysis-results-interchange-format" data-pagefind-ignore>#</a>SARIF (Static Analysis Results Interchange Format)</h2>
 <p>SARIF 2.1.0 JSON, suitable for GitHub Code Scanning and other SARIF-compatible tools.</p>
 <pre><code class="hljs language-bash">nyx scan . --format sarif &gt; results.sarif</code></pre>
-<p>The SARIF output includes:</p>
-<ul>
-<li><strong>Tool metadata</strong>: Nyx name and version</li>
-<li><strong>Rules</strong>: Rule ID, description, severity mapping</li>
-<li><strong>Results</strong>: One result per finding with location, message, and properties</li>
-<li><strong>Properties</strong>: Each result includes <code>category</code> and optionally <code>confidence</code> and <code>rollup.count</code></li>
-<li><strong>Related locations</strong>: Rollup findings include example locations in <code>relatedLocations</code></li>
-<li><strong>Artifacts</strong>: File paths referenced by findings</li>
-</ul>
+<p>The output carries tool metadata (Nyx name and version), a rule entry per rule
+ID with description and severity mapping, and one result per finding with
+location, message, and properties. Result properties include <code>category</code> and
+optionally <code>confidence</code>, <code>rollup.count</code>, and <code>nyx_dynamic_verdict</code>. A dynamic
+verdict status, when present, is added as
+<code>partialFingerprints.dynamic_verdict_status</code>. Rollup findings list example
+locations in <code>relatedLocations</code>, and file paths referenced by findings are
+emitted as artifacts.</p>
 <h3 id="github-code-scanning-integration"><a class="docs-anchor" href="#github-code-scanning-integration" aria-label="Link to github-code-scanning-integration" data-pagefind-ignore>#</a>GitHub Code Scanning integration</h3>
 <pre><code class="hljs language-yaml"><span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Run</span> <span class="hljs-string">Nyx</span>
   <span class="hljs-attr">run:</span> <span class="hljs-string">nyx</span> <span class="hljs-string">scan</span> <span class="hljs-string">.</span> <span class="hljs-string">--format</span> <span class="hljs-string">sarif</span> <span class="hljs-string">&gt;</span> <span class="hljs-string">results.sarif</span>
@@ -618,6 +745,21 @@
 </tbody></table>
 <p>Without <code>--fail-on</code> or <code>--gate</code>, Nyx always exits <code>0</code> on a successful scan regardless of findings count.</p>
 <hr>
+<h2 id="repository-triage"><a class="docs-anchor" href="#repository-triage" aria-label="Link to repository-triage" data-pagefind-ignore>#</a>Repository Triage</h2>
+<p><code>nyx scan</code> and <code>nyx serve</code> share <code>.nyx/triage.json</code> in the scan root. Its
+fingerprints are portable, so committed triage decisions survive different
+checkout paths in local runs and CI.</p>
+<p>When the file exists, CLI scans apply it automatically:</p>
+<ul>
+<li><code>open</code> and <code>investigating</code> findings remain active.</li>
+<li><code>false_positive</code>, <code>accepted_risk</code>, <code>suppressed</code>, and <code>fixed</code> findings are
+excluded from output and <code>--fail-on</code> checks by default.</li>
+<li><code>--show-suppressed</code> includes terminal triage findings and emits
+<code>triage_state</code> plus <code>triage_note</code> when present.</li>
+</ul>
+<p><code>nyx serve</code> reads and writes the same file when triage sync is enabled, so
+browser triage and CI gating use the same decisions.</p>
+<hr>
 <h2 id="severity-levels"><a class="docs-anchor" href="#severity-levels" aria-label="Link to severity-levels" data-pagefind-ignore>#</a>Severity Levels</h2>
 <table>
 <thead>
@@ -653,7 +795,7 @@
 <p>Use <code>--keep-nonprod-severity</code> to disable this behavior.</p>
 <hr>
 <h2 id="inline-suppressions"><a class="docs-anchor" href="#inline-suppressions" aria-label="Link to inline-suppressions" data-pagefind-ignore>#</a>Inline Suppressions</h2>
-<p>Suppress specific findings directly in source code using <code>nyx:ignore</code> comments. Suppressed findings are excluded from output, severity counts, and <code>--fail-on</code> checks by default.</p>
+<p>Suppress specific findings in source with <code>nyx:ignore</code> comments. Suppressed findings are excluded from output, severity counts, and <code>--fail-on</code> checks by default.</p>
 <h3 id="comment-syntax"><a class="docs-anchor" href="#comment-syntax" aria-label="Link to comment-syntax" data-pagefind-ignore>#</a>Comment syntax</h3>
 <table>
 <thead>
@@ -680,27 +822,21 @@
 <span class="hljs-comment"># nyx:ignore-next-line taint-unsanitised-flow</span>
 x = dangerous()                                           (suppressed by the comment above)</code></pre>
 <ul>
-<li><code>nyx:ignore &lt;RULE_ID&gt;</code>: suppresses findings on the <strong>same line</strong> as the comment.</li>
-<li><code>nyx:ignore-next-line &lt;RULE_ID&gt;</code>: suppresses findings on the <strong>next line</strong>.</li>
+<li><code>nyx:ignore &lt;RULE_ID&gt;</code> suppresses findings on the <strong>same line</strong> as the comment.</li>
+<li><code>nyx:ignore-next-line &lt;RULE_ID&gt;</code> suppresses findings on the <strong>next line</strong>.</li>
 <li>For taint findings, the primary line is the <strong>sink line</strong> (the <code>line</code> field in output).</li>
 </ul>
 <h3 id="rule-id-matching"><a class="docs-anchor" href="#rule-id-matching" aria-label="Link to rule-id-matching" data-pagefind-ignore>#</a>Rule ID matching</h3>
+<p>Matching is case-sensitive and exact after canonicalization.</p>
 <ul>
-<li><strong>Case-sensitive</strong>, exact match after canonicalization.</li>
 <li>Comma-separated: <code>nyx:ignore rule-a, rule-b</code></li>
 <li>Wildcard suffix: <code>nyx:ignore rs.quality.*</code> matches any ID starting with <code>rs.quality.</code></li>
 <li>Taint IDs are canonicalized: <code>nyx:ignore taint-unsanitised-flow</code> matches <code>taint-unsanitised-flow (source 5:1)</code> (parenthetical suffix stripped).</li>
 </ul>
 <h3 id="console-behavior"><a class="docs-anchor" href="#console-behavior" aria-label="Link to console-behavior" data-pagefind-ignore>#</a>Console behavior</h3>
-<ul>
-<li><strong>Default</strong>: suppressed findings are hidden entirely.</li>
-<li><strong><code>--show-suppressed</code></strong>: suppressed findings appear dimmed with <code>[SUPPRESSED]</code> tag. Summary shows <code>&quot;N issues (M suppressed)&quot;</code>.</li>
-</ul>
+<p>Suppressed findings are hidden entirely by default. With <code>--show-suppressed</code> they appear dimmed with a <code>[SUPPRESSED]</code> tag, and the summary shows <code>&quot;N issues (M suppressed)&quot;</code>.</p>
 <h3 id="json-sarif-behavior"><a class="docs-anchor" href="#json-sarif-behavior" aria-label="Link to json-sarif-behavior" data-pagefind-ignore>#</a>JSON / SARIF behavior</h3>
-<ul>
-<li><strong>Default</strong>: suppressed findings are excluded from JSON/SARIF output.</li>
-<li><strong><code>--show-suppressed</code></strong>: suppressed findings are included with additional fields:</li>
-</ul>
+<p>Suppressed findings are excluded from JSON/SARIF output by default. <code>--show-suppressed</code> includes them with these additional fields:</p>
 <pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;suppressed&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;suppression&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
@@ -774,7 +910,7 @@ x = dangerous()                                           (suppressed by the com
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

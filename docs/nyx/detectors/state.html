@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>State model analysis | Nyx docs</title>
-    <meta name="description" content="Tracks resource lifecycle and authentication state through a function. Detects use-after-close, double-close, leaks, and unauthenticated access to..." />
+    <meta name="description" content="Tracks resource lifecycle and authentication state through a function: use-after-close, double-close, leaks, and unauthenticated access to privileged..." />
     <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Under the hood, State model analysis, taint, Rust, Go, Python" />
     <meta name="author" content="Eli Peter" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -24,13 +24,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../../styles.css" />
+    <link rel="stylesheet" href="../../../docs/nyx/mermaid.css" />
     <script defer src="../../../docs/search.js"></script>
+    <script defer src="../../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="State model analysis" />
-    <meta property="og:description" content="Tracks resource lifecycle and authentication state through a function. Detects use-after-close, double-close, leaks, and unauthenticated access to..." />
+    <meta property="og:description" content="Tracks resource lifecycle and authentication state through a function: use-after-close, double-close, leaks, and unauthenticated access to privileged..." />
     <meta property="og:url" content="https://nyxsec.dev/docs/nyx/detectors/state" />
     <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
     <meta property="og:image:type" content="image/png" />
@@ -39,7 +41,7 @@
     <meta property="og:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="State model analysis" />
-    <meta name="twitter:description" content="Tracks resource lifecycle and authentication state through a function. Detects use-after-close, double-close, leaks, and unauthenticated access to..." />
+    <meta name="twitter:description" content="Tracks resource lifecycle and authentication state through a function: use-after-close, double-close, leaks, and unauthenticated access to privileged..." />
     <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
     <meta name="twitter:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="theme-color" content="#F9F8F4" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -165,7 +167,7 @@
       "headline": "State model analysis",
       "name": "State model analysis",
       "url": "https://nyxsec.dev/docs/nyx/detectors/state",
-      "description": "Tracks resource lifecycle and authentication state through a function. Detects use-after-close, double-close, leaks, and unauthenticated access to...",
+      "description": "Tracks resource lifecycle and authentication state through a function: use-after-close, double-close, leaks, and unauthenticated access to privileged...",
       "inLanguage": "en-US",
       "articleSection": "Under the hood",
       "isPartOf": {
@@ -262,7 +264,7 @@
   </div>
           <div class="docs-prose" data-pagefind-body>
 <h1 id="state-model-analysis"><a class="docs-anchor" href="#state-model-analysis" aria-label="Link to state-model-analysis" data-pagefind-ignore>#</a>State model analysis</h1>
-<p>Tracks resource lifecycle and authentication state through a function. Detects use-after-close, double-close, leaks, and unauthenticated access to privileged operations.</p>
+<p>Tracks resource lifecycle and authentication state through a function: use-after-close, double-close, leaks, and unauthenticated access to privileged operations.</p>
 <p>State analysis is on by default. Disable with <code>scanner.enable_state_analysis = false</code>. It runs in <code>--mode full</code> and <code>--mode taint</code>; AST-only mode skips it.</p>
 <h2 id="rule-ids"><a class="docs-anchor" href="#rule-ids" aria-label="Link to rule-ids" data-pagefind-ignore>#</a>Rule IDs</h2>
 <table>
@@ -294,14 +296,14 @@
 </tr>
 </tbody></table>
 <h2 id="what-it-detects"><a class="docs-anchor" href="#what-it-detects" aria-label="Link to what-it-detects" data-pagefind-ignore>#</a>What it detects</h2>
-<p><strong><code>state-use-after-close</code></strong>: Resource transitions to CLOSED (via <code>close</code>, <code>fclose</code>, <code>disconnect</code>, …), then a use operation happens on it.</p>
+<p><code>state-use-after-close</code>: a resource reaches CLOSED (via <code>close</code>, <code>fclose</code>, <code>disconnect</code>, ...) and is then used.</p>
 <pre><code class="hljs language-c">FILE *f = fopen(<span class="hljs-string">&quot;data.txt&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>);
 fclose(f);
 fread(buf, <span class="hljs-number">1</span>, <span class="hljs-number">100</span>, f);  <span class="hljs-comment">// state-use-after-close</span></code></pre>
-<p><strong><code>state-double-close</code></strong>: Resource closed twice. Crashes or undefined behaviour on most runtimes.</p>
-<p><strong><code>state-resource-leak</code></strong>: Resource opened but never closed on any path through the function. Definite leak.</p>
-<p><strong><code>state-resource-leak-possible</code></strong>: Resource closed on some paths but not others. Lower confidence; often an early-return error path.</p>
-<p><strong><code>state-unauthed-access</code></strong>: A function recognised as a web handler reaches a privileged sink without an auth call on the path.</p>
+<p><code>state-double-close</code>: a resource closed twice. Crashes or undefined behaviour on most runtimes.</p>
+<p><code>state-resource-leak</code>: opened but never closed on any path through the function. Definite leak.</p>
+<p><code>state-resource-leak-possible</code>: closed on some paths but not others. Lower confidence, often an early-return error path.</p>
+<p><code>state-unauthed-access</code>: a function recognised as a web handler reaches a privileged sink without an auth call on the path.</p>
 <p>A function counts as a web handler if its name starts with <code>handle_</code>, <code>route_</code>, or <code>api_</code> (sufficient on its own), or starts with <code>serve_</code>/<code>process_</code> and the file uses web-shaped parameter names (<code>request</code>, <code>req</code>, <code>ctx</code>, <code>res</code>, <code>response</code>, <code>w</code>, <code>writer</code>, language-dependent). <code>main</code> is excluded.</p>
 <h2 id="managed-resource-suppression"><a class="docs-anchor" href="#managed-resource-suppression" aria-label="Link to managed-resource-suppression" data-pagefind-ignore>#</a>Managed-resource suppression</h2>
 <p>Several language-specific cleanup patterns suppress leak findings:</p>
@@ -341,12 +343,12 @@ fread(buf, <span class="hljs-number">1</span>, <span class="hljs-number">100</sp
 </tbody></table>
 <h2 id="what-it-cant-detect"><a class="docs-anchor" href="#what-it-cant-detect" aria-label="Link to what-it-cant-detect" data-pagefind-ignore>#</a>What it can&#39;t detect</h2>
 <ul>
-<li><strong>Cross-function resource ownership.</strong> Open in one function, close in another, leak gets reported in the opener. The most common FP source for leak detection.</li>
-<li><strong>Factory / builder functions</strong> that return a resource for the caller to manage.</li>
-<li><strong>Variable shadowing across scopes.</strong> Same name in inner and outer scope shares one symbol; an inner close masks an outer leak.</li>
-<li><strong>Resources stored in collections.</strong> Handles in arrays / maps / channels and cleaned up via iteration are not tracked.</li>
-<li><strong>Dynamic dispatch.</strong> Close called via trait object or interface may not be recognised.</li>
-<li><strong>Type-state authentication.</strong> <code>AuthenticatedRequest&lt;T&gt;</code> and similar Rust patterns are not recognised as auth.</li>
+<li>Resource ownership that crosses functions. Open in one function, close in another, and the leak is reported in the opener. This is the most common FP source for leak detection.</li>
+<li>Factory / builder functions that return a resource for the caller to manage.</li>
+<li>Variable shadowing across scopes. Same name in inner and outer scope shares one symbol, so an inner close masks an outer leak.</li>
+<li>Resources stored in collections. Handles in arrays / maps / channels and cleaned up via iteration are not tracked.</li>
+<li>Dynamic dispatch. A close called via trait object or interface may not be recognised.</li>
+<li>Type-state authentication. <code>AuthenticatedRequest&lt;T&gt;</code> and similar Rust patterns are not recognised as auth.</li>
 </ul>
 <h2 id="common-false-positives"><a class="docs-anchor" href="#common-false-positives" aria-label="Link to common-false-positives" data-pagefind-ignore>#</a>Common false positives</h2>
 <table>
@@ -576,7 +578,7 @@ strcmp, strncmp, strlen, <span class="hljs-keyword">sprintf</span>, snprintf</co
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../../scanner">Overview</a>
             <a href="../../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

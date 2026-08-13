@@ -79,6 +79,7 @@ Documentation:
 Release notes:
 - News index: https://nyxsec.dev/news/
 - Nyx Agent launch: https://nyxsec.dev/news/nyx-agent
+- Nyx 0.8.0: https://nyxsec.dev/news/nyx-0-8-0
 - Nyx 0.7.0: https://nyxsec.dev/news/nyx-0-7-0
 - Nyx 0.6.0: https://nyxsec.dev/news/nyx-0-6-0
 - Nyx 0.5.0: https://nyxsec.dev/news/nyx-0-5-0
@@ -100,7 +101,7 @@ External:
 
 ## Project metadata
 
-- Current package: `nyx-scanner` v0.7.0
+- Current package: `nyx-scanner` v0.8.0
 - Rust requirement: stable Rust 1.88+ for Cargo installs
 - Primary site: https://nyxsec.dev
 - Scanner page: https://nyxsec.dev/scanner
@@ -274,7 +275,7 @@ nyx scan --engine-profile deep
 GitHub Actions workflow:
 
 ```yaml
-- uses: elicpeter/nyx@v0.7.0
+- uses: nyx-sec/nyx@v0.8.0
   with:
     format: sarif
     fail-on: MEDIUM

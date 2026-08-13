@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>`nyx serve`: the browser UI | Nyx docs</title>
     <meta name="description" content="The CLI is fine for CI. For triage, you want context: the source snippet, the dataflow path, the history of how a finding has moved across scans, and a..." />
-    <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Using nyx, `nyx serve`: the browser UI, JSON, API, json, api" />
+    <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Using nyx, `nyx serve`: the browser UI, API, json, JSON, api" />
     <meta name="author" content="Eli Peter" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -24,7 +24,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -262,6 +264,13 @@ nyx serve ./my-project            <span class="hljs-comment"># serve a specific 
 nyx serve --port 9750             <span class="hljs-comment"># override port</span>
 nyx serve --no-browser            <span class="hljs-comment"># don&#x27;t auto-open</span></code></pre>
 <p>Persistent settings live under <code>[server]</code> in <code>nyx.conf</code> / <code>nyx.local</code>.</p>
+<pre><code class="language-mermaid">flowchart LR
+    Scan[&quot;nyx scan&lt;br/&gt;or UI-started scan&quot;] --&gt; Cache[&quot;.nyx findings&lt;br/&gt;plus SQLite project index&quot;]
+    Cache --&gt; Serve[&quot;nyx serve&lt;br/&gt;loopback API and embedded React UI&quot;]
+    Serve --&gt; Review[&quot;Review findings&lt;br/&gt;flow, evidence, history&quot;]
+    Review --&gt; Triage[&quot;Update triage state&lt;br/&gt;investigate, suppress, accept, fix&quot;]
+    Triage --&gt; Sync[&quot;.nyx/triage.json&lt;br/&gt;optional repo-synced state&quot;]
+    Sync --&gt; Cache</code></pre>
 <p>Starting a scan from the UI runs dynamic verification on <code>Confidence &gt;= Medium</code>
 findings by default. Check &quot;Skip dynamic verification&quot; in the scan modal to get
 a fast static-only result. See <a href="dynamic">Dynamic verification</a> for details.</p>
@@ -271,8 +280,8 @@ a fast static-only result. See <a href="dynamic">Dynamic verification</a> for de
 <h2 id="security-model"><a class="docs-anchor" href="#security-model" aria-label="Link to security-model" data-pagefind-ignore>#</a>Security model</h2>
 <p><code>nyx serve</code> enforces three things:</p>
 <ol>
-<li><strong>Loopback bind only.</strong> <code>--host</code> and <code>[server].host</code> are clamped to <code>127.0.0.1</code>, <code>localhost</code>, or <code>::1</code>. Any other value is refused at startup with <code>Nyx serve only binds to loopback addresses; refused host &#39;&lt;value&gt;&#39;</code> (<a href="https://github.com/elicpeter/nyx/blob/master/src/commands/serve.rs"><code>src/commands/serve.rs</code></a>).</li>
-<li><strong>Host-header check.</strong> Every request must carry a <code>Host</code> header that matches the bound address and port. Missing or mismatched headers get a <code>400 invalid Host header</code>. Defends against DNS rebinding (<a href="https://github.com/elicpeter/nyx/blob/master/src/server/security.rs"><code>src/server/security.rs</code></a>).</li>
+<li><strong>Loopback bind only.</strong> <code>--host</code> and <code>[server].host</code> are clamped to <code>127.0.0.1</code>, <code>localhost</code>, or <code>::1</code>. Any other value is refused at startup with <code>Nyx serve only binds to loopback addresses; refused host &#39;&lt;value&gt;&#39;</code> (<a href="https://github.com/nyx-sec/nyx/blob/master/src/commands/serve.rs"><code>src/commands/serve.rs</code></a>).</li>
+<li><strong>Host-header check.</strong> Every request must carry a <code>Host</code> header that matches the bound address and port. Missing or mismatched headers get a <code>400 invalid Host header</code>. Defends against DNS rebinding (<a href="https://github.com/nyx-sec/nyx/blob/master/src/server/security.rs"><code>src/server/security.rs</code></a>).</li>
 <li><strong>CSRF on mutations.</strong> <code>POST</code> / <code>PUT</code> / <code>PATCH</code> / <code>DELETE</code> requests must carry a per-process CSRF token in the <code>x-nyx-csrf</code> header. The token is generated once when the server starts and exposed at <code>GET /api/health</code> so the embedded SPA can read it. Cross-origin mutations are rejected before the CSRF check via the <code>Origin</code> header.</li>
 </ol>
 <p>If you forward the port over SSH or expose it through a reverse proxy, the host-header check will reject the request because the <code>Host</code> won&#39;t match <code>localhost:9700</code>. That&#39;s the intended behaviour. Don&#39;t do this without a deliberate reason; the loopback bind is part of the security model.</p>
@@ -384,7 +393,7 @@ a fast static-only result. See <a href="dynamic">Dynamic verification</a> for de
 <p>Each finding carries a triage state: <code>open</code>, <code>investigating</code>, <code>false_positive</code>, <code>accepted_risk</code>, <code>suppressed</code>, or <code>fixed</code>. The triage page bulk-updates them and shows the audit trail.</p>
 <p align="center"><img src="assets/screenshots/docs/serve-triage.png" alt="Nyx triage page: 13 findings need attention, severity breakdown, Findings/Suppression rules/Audit log tabs, rule chips, Investigate buttons" width="900"/></p><p>State writes are persisted to SQLite immediately, and (when <code>[server].triage_sync = true</code>, default on) mirrored to <code>.nyx/triage.json</code> in the project root. Commit that file:</p>
 <pre><code class="hljs language-bash">git add .nyx/triage.json</code></pre>
-<p>It carries decisions across machines so a teammate&#39;s local scan reflects yours. The format is documented in <a href="https://github.com/elicpeter/nyx/blob/master/src/server/triage_sync.rs"><code>src/server/triage_sync.rs</code></a>; the schema is stable and round-trip-safe with <code>nyx serve</code> re-imports.</p>
+<p>It carries decisions across machines so a teammate&#39;s local scan reflects yours. The format is documented in <a href="https://github.com/nyx-sec/nyx/blob/master/src/server/triage_sync.rs"><code>src/server/triage_sync.rs</code></a>; the schema is stable and round-trip-safe with <code>nyx serve</code> re-imports.</p>
 <h3 id="explorer"><a class="docs-anchor" href="#explorer" aria-label="Link to explorer" data-pagefind-ignore>#</a>Explorer</h3>
 <p>A file tree with per-file finding counts, syntax-highlighted source, and a right rail with the file&#39;s symbols and findings. Useful for &quot;what&#39;s wrong with this module&quot; rather than &quot;what&#39;s wrong with this finding&quot;.</p>
 <p align="center"><img src="assets/screenshots/docs/serve-explorer.png" alt="Nyx explorer: file tree with per-file finding counts, syntax-highlighted Python source with red sink marker on the os.system line, file-summary right rail with findings" width="900"/></p><p>The path query string preselects a file: <code>/explorer?file=src/handler.rs</code>.</p>
@@ -399,7 +408,7 @@ a fast static-only result. See <a href="dynamic">Dynamic verification</a> for de
 <p>A live config editor. Reads the merged config (<code>nyx.conf</code> + <code>nyx.local</code>), lets you flip switches and add custom source / sanitizer / sink rules, and writes back to <code>nyx.local</code>. Changes apply to the next scan; the running server uses its initial config snapshot.</p>
 <p align="center"><img src="assets/screenshots/docs/serve-config.png" alt="Nyx config page: General settings (analysis mode, max file size, excluded extensions, attack-surface ranking), Triage Sync toggle, Sources section with language/matcher/capability dropdowns and a per-language matcher table" width="900"/></p><p>The custom-rule form picks a language, a matcher (function or property name), and a capability. The capability list matches the <code>Cap</code> bitflags the taint engine uses; see <a href="rules#capability-list-for-custom-rules">rules.md</a> for what each one means.</p>
 <h2 id="api-surface"><a class="docs-anchor" href="#api-surface" aria-label="Link to api-surface" data-pagefind-ignore>#</a>API surface</h2>
-<p>For tooling, the JSON endpoints under <code>/api/</code> are stable enough to script against. The full route map lives in <a href="https://github.com/elicpeter/nyx/blob/master/src/server/routes/mod.rs"><code>src/server/routes/mod.rs</code></a>. Mutating endpoints require the <code>x-nyx-csrf</code> header (read it from <code>GET /api/health</code>).</p>
+<p>For tooling, the JSON endpoints under <code>/api/</code> are stable enough to script against. The full route map lives in <a href="https://github.com/nyx-sec/nyx/blob/master/src/server/routes/mod.rs"><code>src/server/routes/mod.rs</code></a>. Mutating endpoints require the <code>x-nyx-csrf</code> header (read it from <code>GET /api/health</code>).</p>
 <h2 id="disabling"><a class="docs-anchor" href="#disabling" aria-label="Link to disabling" data-pagefind-ignore>#</a>Disabling</h2>
 <p>If you don&#39;t want the UI for a project, set:</p>
 <pre><code class="hljs language-toml"><span class="hljs-section">[server]</span>
@@ -436,7 +445,7 @@ a fast static-only result. See <a href="dynamic">Dynamic verification</a> for de
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

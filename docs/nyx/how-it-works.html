@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>How Nyx works | Nyx docs</title>
-    <meta name="description" content="If you're going to act on a finding, it helps to know how the scanner got there. This page is the short version. Source paths are linked where the answer to..." />
-    <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Under the hood, How Nyx works, SSA, taint, Java, Rust" />
+    <meta name="description" content="If you're going to act on a finding, it helps to know how the scanner got there. Source paths link to where the exact behaviour lives in the code." />
+    <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Under the hood, How Nyx works, CFG, SSA, Taint, taint" />
     <meta name="author" content="Eli Peter" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -24,13 +24,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="How Nyx works" />
-    <meta property="og:description" content="If you're going to act on a finding, it helps to know how the scanner got there. This page is the short version. Source paths are linked where the answer to..." />
+    <meta property="og:description" content="If you're going to act on a finding, it helps to know how the scanner got there. Source paths link to where the exact behaviour lives in the code." />
     <meta property="og:url" content="https://nyxsec.dev/docs/nyx/how-it-works" />
     <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
     <meta property="og:image:type" content="image/png" />
@@ -39,7 +41,7 @@
     <meta property="og:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="How Nyx works" />
-    <meta name="twitter:description" content="If you're going to act on a finding, it helps to know how the scanner got there. This page is the short version. Source paths are linked where the answer to..." />
+    <meta name="twitter:description" content="If you're going to act on a finding, it helps to know how the scanner got there. Source paths link to where the exact behaviour lives in the code." />
     <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
     <meta name="twitter:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="theme-color" content="#F9F8F4" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -165,7 +167,7 @@
       "headline": "How Nyx works",
       "name": "How Nyx works",
       "url": "https://nyxsec.dev/docs/nyx/how-it-works",
-      "description": "If you're going to act on a finding, it helps to know how the scanner got there. This page is the short version. Source paths are linked where the answer to...",
+      "description": "If you're going to act on a finding, it helps to know how the scanner got there. Source paths link to where the exact behaviour lives in the code.",
       "inLanguage": "en-US",
       "articleSection": "Under the hood",
       "isPartOf": {
@@ -256,17 +258,32 @@
   </div>
           <div class="docs-prose" data-pagefind-body>
 <h1 id="how-nyx-works"><a class="docs-anchor" href="#how-nyx-works" aria-label="Link to how-nyx-works" data-pagefind-ignore>#</a>How Nyx works</h1>
-<p>If you&#39;re going to act on a finding, it helps to know how the scanner got there. This page is the short version. Source paths are linked where the answer to &quot;exactly what does it do&quot; lives in the code.</p>
+<p>If you&#39;re going to act on a finding, it helps to know how the scanner got there. Source paths link to where the exact behaviour lives in the code.</p>
 <h2 id="the-pipeline"><a class="docs-anchor" href="#the-pipeline" aria-label="Link to the-pipeline" data-pagefind-ignore>#</a>The pipeline</h2>
 <p>A scan runs in two passes over the file tree, with an optional SQLite index that lets the second scan skip files whose content hash hasn&#39;t changed.</p>
-<p><strong>Pass 1, per file.</strong> Tree-sitter parses the file. Nyx builds an intra-procedural control-flow graph, lowers it to SSA, and extracts a summary per function describing what that function does at the boundary: which arguments flow to sinks, which sources it reads from, which sinks it calls, what taint it strips, what it returns. Summaries are persisted to SQLite (<a href="https://github.com/elicpeter/nyx/tree/master/src/summary/"><code>src/summary/</code></a>, <a href="https://github.com/elicpeter/nyx/blob/master/src/database.rs"><code>src/database.rs</code></a>).</p>
-<p><strong>Summary merge.</strong> All per-file summaries get unioned into a global map keyed by qualified function name.</p>
-<p><strong>Pass 2, per file.</strong> Each file is reanalysed with the global summaries available. The taint engine runs a forward dataflow worklist over the SSA representation. When it hits a call, it consults summaries to decide whether the call propagates taint, sanitizes it, or terminates the flow. Findings are produced when tainted data reaches a sink whose required capability is still set on the value.</p>
-<p>Two extra layers tune precision around calls. <strong>Context-sensitive inlining</strong> (k=1) re-runs intra-file callees with the actual argument taint at the call site, so a helper called once with tainted input and once with sanitized input produces the right result for each call. <strong>SCC fixed-point</strong>: when a group of mutually-recursive functions forms a strongly-connected component in the call graph, the engine iterates summaries to a joint fixed-point (capped at 64 iterations). SCCs that span files are also handled.</p>
-<p>When a method call has a receiver typed as a super-class, trait, or interface, <strong>hierarchy fan-out</strong> widens the resolved callee set to every concrete implementer the engine has seen. A class diagram extracted in pass 1 (Java extends/implements, Rust impl-for, TS/JS extends, Python bases, Ruby includes, PHP extends/implements, C++ inheritance) feeds an index that the call resolver consults during pass 2. The fan-out is capped at 8 implementers per call site; over-fanning is a precision tax, not a soundness issue.</p>
-<p>A separate <strong>field-sensitive points-to</strong> pass tracks abstract locations down to the field level, so <code>c.mu.Lock()</code> is a lock on <code>Field(c, mu)</code> rather than on <code>c</code> as a whole. That distinction is what lets the resource-lifecycle and taint passes tell <code>obj.field = tainted; sink(obj.other_field)</code> apart from the conservative whole-variable approximation. Subscript reads and writes (<code>arr[i]</code>, <code>map[k] = v</code>) lower to synthetic <code>__index_get__</code> / <code>__index_set__</code> calls so the same container model handles them. Set <code>NYX_POINTER_ANALYSIS=0</code> to fall back to the pre-pointer-pass behaviour for baseline comparison.</p>
+<pre><code class="language-mermaid">flowchart TD
+    Walk[&quot;Walk file tree&quot;] --&gt; Pass1[&quot;Pass 1 per file&lt;br/&gt;tree-sitter parse, CFG, SSA&quot;]
+    Pass1 --&gt; Summaries[&quot;Per-function summaries&lt;br/&gt;sources, sinks, sanitizers, returns, points-to&quot;]
+    Pass1 --&gt; Hierarchy[&quot;Type hierarchy index&lt;br/&gt;extends, implements, impl-for, includes&quot;]
+    Summaries --&gt; Global[&quot;GlobalSummaries map&lt;br/&gt;plus optional SQLite cache&quot;]
+    Hierarchy --&gt; Global
+    Global --&gt; Pass2[&quot;Pass 2 per file&lt;br/&gt;cross-file context&quot;]
+    Pass2 --&gt; Taint[&quot;Forward SSA taint worklist&lt;br/&gt;finite lattice, guaranteed convergence&quot;]
+    Pass2 --&gt; Calls[&quot;Call precision&lt;br/&gt;k=1 inline, summaries, SCC fixed-point&quot;]
+    Taint --&gt; Findings[&quot;Findings with evidence&lt;br/&gt;source, path, sink, engine notes&quot;]
+    Calls --&gt; Findings
+    Findings --&gt; Rank[&quot;Rank and dedupe&lt;br/&gt;severity, confidence, score&quot;]
+    Rank --&gt; Verify[&quot;Dynamic verification&lt;br/&gt;sandboxed harnesses, verdicts&quot;]
+    Verify --&gt; Emit[&quot;Emit&lt;br/&gt;console, JSON, SARIF, UI&quot;]</code></pre>
+<p>Pass 1 runs per file. Tree-sitter parses it, then Nyx builds an intra-procedural control-flow graph, lowers it to SSA, and extracts a per-function summary of what the function does at its boundary: which arguments flow to sinks, which sources it reads, which sinks it calls, what taint it strips, what it returns. Summaries persist to SQLite (<a href="https://github.com/nyx-sec/nyx/tree/master/src/summary/"><code>src/summary/</code></a>, <a href="https://github.com/nyx-sec/nyx/blob/master/src/database.rs"><code>src/database.rs</code></a>).</p>
+<p>The merge step unions all per-file summaries into a global map keyed by qualified function name.</p>
+<p>Pass 2 reanalyses each file with the global summaries available. The taint engine runs a forward dataflow worklist over the SSA. At a call it consults summaries to decide whether the call propagates taint, sanitizes it, or terminates the flow. A finding is produced when tainted data reaches a sink whose required capability is still set on the value.</p>
+<p>Two extra layers tune precision around calls. Context-sensitive inlining (k=1) re-runs intra-file callees with the actual argument taint at the call site, so a helper called once with tainted input and once with sanitized input gets the right result for each call. The SCC fixed-point handles mutual recursion: when a group of functions forms a strongly-connected component in the call graph, the engine iterates summaries to a joint fixed-point (capped at 64 iterations). SCCs that span files are also handled.</p>
+<p>When a method call has a receiver typed as a super-class, trait, or interface, hierarchy fan-out widens the resolved callee set to every concrete implementer the engine has seen. A class diagram extracted in pass 1 (Java extends/implements, Rust impl-for, TS/JS extends, Python bases, Ruby includes, PHP extends/implements, C++ inheritance) feeds the index the call resolver consults during pass 2. Fan-out is capped at 8 implementers per call site; over-fanning is a precision tax, not a soundness issue.</p>
+<p>A separate field-sensitive points-to pass tracks abstract locations down to the field level, so <code>c.mu.Lock()</code> is a lock on <code>Field(c, mu)</code> rather than on <code>c</code> as a whole. That distinction lets the resource-lifecycle and taint passes tell <code>obj.field = tainted; sink(obj.other_field)</code> apart from the conservative whole-variable approximation. Subscript reads and writes (<code>arr[i]</code>, <code>map[k] = v</code>) lower to synthetic <code>__index_get__</code> / <code>__index_set__</code> calls so the same container model handles them. Set <code>NYX_POINTER_ANALYSIS=0</code> to fall back to the pre-pointer-pass behaviour for baseline comparison.</p>
+<p>Dynamic verification comes last. After ranking and dedupe, default builds verify Medium and High confidence findings unless <code>--no-verify</code> or <code>scanner.verify = false</code> is set. The verifier derives a small harness from the finding, runs it in a sandbox against curated payloads, and stores the result on <code>evidence.dynamic_verdict</code>. <code>Confirmed</code> means a vulnerable payload fired and its benign control stayed clean. <code>NotConfirmed</code> means the harness ran but did not fire, not that the finding is closed.</p>
 <h2 id="optional-analyses-on-top"><a class="docs-anchor" href="#optional-analyses-on-top" aria-label="Link to optional-analyses-on-top" data-pagefind-ignore>#</a>Optional analyses on top</h2>
-<p>These run on top of the forward taint pass. They&#39;re independently switchable via <code>[analysis.engine]</code> config or matching CLI flags. See <a href="advanced-analysis">advanced-analysis.md</a> for the full description and tradeoffs.</p>
+<p>These run on top of the forward taint pass and are independently switchable via <code>[analysis.engine]</code> config or matching CLI flags. See <a href="advanced-analysis">advanced-analysis.md</a> for the description and tradeoffs.</p>
 <table>
 <thead>
 <tr>
@@ -313,16 +330,44 @@
 </tbody></table>
 <p><code>--engine-profile fast | balanced | deep</code> flips groups of these at once. <code>balanced</code> is the default and the configuration the benchmark numbers in <a href="language-maturity">language-maturity.md</a> are measured against.</p>
 <h2 id="where-bounds-live"><a class="docs-anchor" href="#where-bounds-live" aria-label="Link to where-bounds-live" data-pagefind-ignore>#</a>Where bounds live</h2>
-<p>Static analysis at scale means choosing where to stop. Nyx exposes its bounds rather than hiding them:</p>
-<ul>
-<li><strong>Inline depth</strong> is k=1. Callees larger than the inline body-size cap fall back to summary-based resolution.</li>
-<li><strong>SCC fixed-point</strong> is capped at 64 iterations. If a recursive cluster doesn&#39;t converge, the engine emits the best summary it has and records an <code>engine_note</code> on affected findings.</li>
-<li><strong>Lattice width</strong> is bounded. Taint origin sets cap at 32 entries per SSA value (<code>--max-origins</code>); points-to sets cap at 32 heap objects (<code>--max-pointsto</code>). Truncation is recorded as <code>OriginsTruncated</code> / <code>PointsToTruncated</code> so you can see when precision was lost.</li>
-<li><strong>Symbolic expressions</strong> cap at depth 32. Deeper expressions degrade to <code>Unknown</code> rather than growing without bound.</li>
-</ul>
+<p>Static analysis at scale means choosing where to stop. Nyx&#39;s bounds are explicit:</p>
+<table>
+<thead>
+<tr>
+<th>Bound</th>
+<th>Limit</th>
+<th>When it is hit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Inline depth</td>
+<td>k=1</td>
+<td>Callees larger than the inline body-size cap fall back to summary-based resolution</td>
+</tr>
+<tr>
+<td>SCC fixed-point</td>
+<td>64 iterations</td>
+<td>The engine emits the best summary it has and records an <code>engine_note</code> on affected findings</td>
+</tr>
+<tr>
+<td>Taint origin sets</td>
+<td>32 entries per SSA value (<code>--max-origins</code>)</td>
+<td>Truncation is recorded as <code>OriginsTruncated</code> so you can see when precision was lost</td>
+</tr>
+<tr>
+<td>Points-to sets</td>
+<td>32 heap objects (<code>--max-pointsto</code>)</td>
+<td>Truncation is recorded as <code>PointsToTruncated</code></td>
+</tr>
+<tr>
+<td>Symbolic expression depth</td>
+<td>32</td>
+<td>Deeper expressions degrade to <code>Unknown</code> rather than growing without bound</td>
+</tr>
+</tbody></table>
 <p>Findings whose engine notes indicate a bound was hit can be filtered with <code>--require-converged</code> for strict CI gates. The flag drops over-reports and bails; under-reports (where the emitted finding is still real but the result set is a lower bound) are kept.</p>
 <h2 id="what-you-get-out"><a class="docs-anchor" href="#what-you-get-out" aria-label="Link to what-you-get-out" data-pagefind-ignore>#</a>What you get out</h2>
-<p>Each finding carries the source location, the sink location, the path in between (when symex produced one), the rule ID, severity, attack-surface score, confidence level, and a list of engine notes describing any precision loss along the way. Console output is human-readable; JSON and SARIF carry the full evidence object for tooling.</p>
+<p>Each finding carries the source location, the sink location, the path in between (when symex produced one), the rule ID, severity, attack-surface score, confidence level, dynamic verdict when one was attempted, and a list of engine notes describing any precision loss along the way. Console output is human-readable; JSON and SARIF carry the full evidence object for tooling.</p>
 <p>For the JSON shape and SARIF mapping, see <a href="output">output.md</a>.</p>
 
           </div>
@@ -355,7 +400,7 @@
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

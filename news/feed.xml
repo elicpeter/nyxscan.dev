@@ -35,6 +35,15 @@
     </item>
 
     <item>
+      <title>Faster, quieter, and it can run your findings</title>
+      <link>https://nyxsec.dev/news/nyx-0-8-0</link>
+      <guid isPermaLink="true">https://nyxsec.dev/news/nyx-0-8-0</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 -0400</pubDate>
+      <dc:creator>Eli Peter</dc:creator>
+      <description>Nyx 0.8.0 cuts false positives to zero on the benchmark corpus, speeds up scans, and adds a beta dynamic verifier that re-runs findings in a sandbox.</description>
+    </item>
+
+    <item>
       <title>More bug classes, less auth noise</title>
       <link>https://nyxsec.dev/news/nyx-0-7-0</link>
       <guid isPermaLink="true">https://nyxsec.dev/news/nyx-0-7-0</guid>

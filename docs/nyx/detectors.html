@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Detectors | Nyx docs</title>
-    <meta name="description" content="Nyx ships four independent detector families. They run together in --mode full, the default. Findings are merged, deduplicated, ranked, and printed in one..." />
+    <meta name="description" content="Nyx ships four independent detector families. All four run in --mode full (the default); findings are merged, deduplicated, ranked, and printed as one..." />
     <meta name="keywords" content="Nyx, Nyx scanner, SAST, static analysis, Rust security scanner, local-first SAST, Under the hood, Detectors, Taint, taint, CFG, cfg" />
     <meta name="author" content="Eli Peter" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
@@ -24,13 +24,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../docs/nyx/mermaid.css" />
     <script defer src="../../docs/search.js"></script>
+    <script defer src="../../docs/nyx/mermaid-init.js"></script>
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Nyx" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Detectors" />
-    <meta property="og:description" content="Nyx ships four independent detector families. They run together in --mode full, the default. Findings are merged, deduplicated, ranked, and printed in one..." />
+    <meta property="og:description" content="Nyx ships four independent detector families. All four run in --mode full (the default); findings are merged, deduplicated, ranked, and printed as one..." />
     <meta property="og:url" content="https://nyxsec.dev/docs/nyx/detectors" />
     <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
     <meta property="og:image:type" content="image/png" />
@@ -39,7 +41,7 @@
     <meta property="og:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Detectors" />
-    <meta name="twitter:description" content="Nyx ships four independent detector families. They run together in --mode full, the default. Findings are merged, deduplicated, ranked, and printed in one..." />
+    <meta name="twitter:description" content="Nyx ships four independent detector families. All four run in --mode full (the default); findings are merged, deduplicated, ranked, and printed as one..." />
     <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
     <meta name="twitter:image:alt" content="Nyx Scanner local-first security documentation" />
     <meta name="theme-color" content="#F9F8F4" />
@@ -78,7 +80,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -129,7 +131,7 @@
       "applicationSubCategory": "Static Application Security Testing",
       "operatingSystem": "Cross-platform",
       "programmingLanguage": "Rust",
-      "codeRepository": "https://github.com/elicpeter/nyx",
+      "codeRepository": "https://github.com/nyx-sec/nyx",
       "downloadUrl": "https://crates.io/crates/nyx-scanner",
       "installUrl": "https://nyxsec.dev/docs/nyx/installation",
       "softwareHelp": "https://nyxsec.dev/docs/nyx/",
@@ -153,7 +155,7 @@
       },
       "isAccessibleForFree": true,
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://nyxsec.dev/docs/nyx/",
         "https://crates.io/crates/nyx-scanner",
         "https://docs.rs/nyx-scanner/latest/nyx_scanner/"
@@ -165,7 +167,7 @@
       "headline": "Detectors",
       "name": "Detectors",
       "url": "https://nyxsec.dev/docs/nyx/detectors",
-      "description": "Nyx ships four independent detector families. They run together in --mode full, the default. Findings are merged, deduplicated, ranked, and printed in one...",
+      "description": "Nyx ships four independent detector families. All four run in --mode full (the default); findings are merged, deduplicated, ranked, and printed as one...",
       "inLanguage": "en-US",
       "articleSection": "Under the hood",
       "isPartOf": {
@@ -256,7 +258,7 @@
   </div>
           <div class="docs-prose" data-pagefind-body>
 <h1 id="detectors"><a class="docs-anchor" href="#detectors" aria-label="Link to detectors" data-pagefind-ignore>#</a>Detectors</h1>
-<p>Nyx ships four independent detector families. They run together in <code>--mode full</code>, the default. Findings are merged, deduplicated, ranked, and printed in one result set.</p>
+<p>Nyx ships four independent detector families. All four run in <code>--mode full</code> (the default); findings are merged, deduplicated, ranked, and printed as one result set.</p>
 <table>
 <thead>
 <tr>
@@ -291,7 +293,15 @@
 <td>Banned APIs, weak crypto, dangerous constructs</td>
 </tr>
 </tbody></table>
-<p>The taint family is split into cap-specific rule classes when a sink callee carries multiple vulnerability classes:</p>
+<pre><code class="language-mermaid">flowchart LR
+    Taint[&quot;Taint analysis&lt;br/&gt;cross-file source-to-sink&quot;] --&gt; Normalize[&quot;Normalize findings&quot;]
+    Cfg[&quot;CFG structural&lt;br/&gt;guards, exits, resource paths&quot;] --&gt; Normalize
+    State[&quot;State model&lt;br/&gt;resource and auth lattice&quot;] --&gt; Normalize
+    Ast[&quot;AST patterns&lt;br/&gt;tree-sitter structural match&quot;] --&gt; Normalize
+    Normalize --&gt; Dedupe[&quot;Deduplicate&lt;br/&gt;same site, rule, severity&quot;]
+    Dedupe --&gt; Rank[&quot;Rank&lt;br/&gt;severity, evidence, context&quot;]
+    Rank --&gt; Output[&quot;Console, JSON, SARIF, UI&quot;]</code></pre>
+<p>When a sink callee carries several vulnerability classes, the taint family splits into cap-specific rule classes:</p>
 <table>
 <thead>
 <tr>
@@ -303,12 +313,12 @@
 <tbody><tr>
 <td><code>taint-unsanitised-flow</code></td>
 <td><code>sql_query</code>, <code>ssrf</code>, <code>code_exec</code>, <code>file_io</code>, <code>fmt_string</code>, <code>deserialize</code>, <code>crypto</code></td>
-<td>Catch-all class for the legacy caps that have not migrated to a dedicated rule id yet.</td>
+<td>Catch-all for the legacy caps that have not migrated to a dedicated rule id yet.</td>
 </tr>
 <tr>
 <td><code>taint-ldap-injection</code></td>
 <td><code>ldap_injection</code></td>
-<td>Attacker-controlled data concatenated into an LDAP filter or DN without RFC 4515 escaping. Receivers typed as <code>LdapClient</code> (JNDI <code>DirContext</code>, Spring <code>LdapTemplate</code>, ldapjs <code>Client</code>, python-ldap <code>LDAPObject</code>, ldap3 <code>Connection</code>) and chained <code>.search</code> / <code>.searchByEntity</code> / <code>.search_s</code> form the sink set.</td>
+<td>Attacker-controlled data concatenated into an LDAP filter or DN without RFC 4515 escaping. Sinks: <code>LdapClient</code>-typed receivers (JNDI <code>DirContext</code>, Spring <code>LdapTemplate</code>, ldapjs <code>Client</code>, python-ldap <code>LDAPObject</code>, ldap3 <code>Connection</code>) with chained <code>.search</code> / <code>.searchByEntity</code> / <code>.search_s</code>.</td>
 </tr>
 <tr>
 <td><code>taint-xpath-injection</code></td>
@@ -328,7 +338,7 @@
 <tr>
 <td><code>taint-template-injection</code></td>
 <td><code>ssti</code></td>
-<td>Attacker controls the <em>template source string</em> fed to a server-side renderer (Jinja2 / Mako / FreeMarker / Twig / Handlebars / EJS / Mustache / ERB / <code>text/template</code> / <code>html/template</code> / Smarty / Blade <code>Template(...)</code> / <code>compile(...)</code>), distinct from rendering a trusted template with tainted variables.</td>
+<td>Attacker controls the <em>template source string</em> fed to a server-side renderer (Jinja2 / Mako / FreeMarker / Twig / Handlebars / EJS / Mustache / ERB / <code>text/template</code> / <code>html/template</code> / Smarty / Blade <code>Template(...)</code> / <code>compile(...)</code>), as distinct from rendering a trusted template with tainted variables.</td>
 </tr>
 <tr>
 <td><code>taint-xxe</code></td>
@@ -351,15 +361,15 @@
 <td>Rust auth subsystem fold-in; see <a href="auth">auth.md</a>.</td>
 </tr>
 </tbody></table>
-<p>A single call site can fire several of these at once when it carries multiple gates. <code>fetch(taintedUrl, {body: tainted})</code> produces both an SSRF finding (URL flow) and a <code>taint-data-exfiltration</code> finding (body flow), each with its own cap mask rather than a conflated union.</p>
-<p>Each cap-class entry is registered in <code>CAP_RULE_REGISTRY</code> (<code>src/labels/mod.rs</code>) with its title, severity, OWASP 2021 code, and description. Browse the registry from the CLI with <code>nyx rules list --class-only</code>, or <code>nyx rules list --kind class --json</code> for machine output.</p>
+<p>One call site can fire several of these when it carries multiple gates. <code>fetch(taintedUrl, {body: tainted})</code> produces an SSRF finding (URL flow) and a <code>taint-data-exfiltration</code> finding (body flow), each with its own cap mask rather than a conflated union.</p>
+<p>Each cap class is registered in <code>CAP_RULE_REGISTRY</code> (<code>src/labels/mod.rs</code>) with its title, severity, OWASP 2021 code, and description. Browse it with <code>nyx rules list --class-only</code>, or <code>nyx rules list --kind class --json</code> for machine output.</p>
 <p>For Rust auth-specific rules (<code>rs.auth.*</code>), see <a href="auth">auth.md</a>.</p>
 <h2 id="how-they-combine"><a class="docs-anchor" href="#how-they-combine" aria-label="Link to how-they-combine" data-pagefind-ignore>#</a>How they combine</h2>
 <p>In <code>--mode full</code>:</p>
 <ol>
-<li><strong>Taint and AST can both fire on one line.</strong> If <code>eval(userInput)</code> triggers both <code>js.code_exec.eval</code> (AST) and <code>taint-unsanitised-flow</code> (taint), both are kept with distinct rule IDs. The taint finding ranks higher because of the analysis-kind bonus.</li>
-<li><strong>State supersedes CFG on resource leaks.</strong> When <code>state-resource-leak</code> and <code>cfg-resource-leak</code> fire at the same location, the CFG one is dropped.</li>
-<li><strong>Exact duplicates are removed.</strong> Same line, column, rule ID, severity → one finding.</li>
+<li>Taint and AST can both fire on one line. <code>eval(userInput)</code> triggers both <code>js.code_exec.eval</code> (AST) and <code>taint-unsanitised-flow</code> (taint); both survive under their own rule IDs, and the taint finding ranks higher from the analysis-kind bonus.</li>
+<li>State supersedes CFG on resource leaks: when <code>state-resource-leak</code> and <code>cfg-resource-leak</code> fire at the same location, the CFG one is dropped.</li>
+<li>Exact duplicates collapse. Same line, column, rule ID, and severity become one finding.</li>
 </ol>
 <h2 id="modes"><a class="docs-anchor" href="#modes" aria-label="Link to modes" data-pagefind-ignore>#</a>Modes</h2>
 <table>
@@ -387,7 +397,7 @@
 </tr>
 </tbody></table>
 <h2 id="attack-surface-ranking"><a class="docs-anchor" href="#attack-surface-ranking" aria-label="Link to attack-surface-ranking" data-pagefind-ignore>#</a>Attack-surface ranking</h2>
-<p>Every finding gets a deterministic score. Findings are sorted by descending score by default. Disable with <code>--no-rank</code> or <code>output.attack_surface_ranking = false</code>.</p>
+<p>Every finding gets a deterministic score, and findings sort by descending score by default. Disable with <code>--no-rank</code> or <code>output.attack_surface_ranking = false</code>.</p>
 <pre><code class="hljs language-plain"><span class="hljs-attr">score</span> = severity_base + analysis_kind + evidence_strength + state_bonus - validation_penalty</code></pre>
 <table>
 <thead>
@@ -417,7 +427,7 @@
 <td>-5 if path-validated</td>
 </tr>
 </tbody></table>
-<p>DATA_EXFIL is calibrated below other taint classes by design. Severity is High only when the source carries credential / session material (cookies, env vars); other Sensitive sources (request headers, file system, database, caught exception) downgrade to Medium. Confidence is capped at Medium and only fires Medium when the abstract / symbolic domain corroborates a concrete string body reaching the outbound payload; otherwise it falls to Low. A guarded flow (<code>path_validated</code>) drops a confidence tier. The intent is to seat data-exfiltration findings below SSRF / SQLi / command-injection but above informational AST patterns.</p>
+<p>DATA_EXFIL is calibrated to seat below SSRF / SQLi / command-injection but above informational AST patterns. Severity is High only when the source carries credential / session material (cookies, env vars); other Sensitive sources (request headers, file system, database, caught exception) downgrade to Medium. Confidence caps at Medium, and reaches Medium only when the abstract / symbolic domain corroborates a concrete string body reaching the outbound payload; otherwise Low. A guarded flow (<code>path_validated</code>) drops a confidence tier.</p>
 <p>Source-kind contributions (taint only):</p>
 <table>
 <thead>
@@ -520,7 +530,7 @@
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

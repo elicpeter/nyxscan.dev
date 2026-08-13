@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Faster, quieter, and it can run your findings | Nyx News</title>
+    <meta
+      name="description"
+      content="Nyx 0.8.0 cuts false positives to zero on the benchmark corpus, speeds up scans, and adds a beta dynamic verifier that re-runs findings in a sandbox."
+    />
+    <meta name="author" content="Eli Peter" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://nyxsec.dev/news/nyx-0-8-0" />
+    <link rel="sitemap" type="application/xml" href="https://nyxsec.dev/sitemap.xml" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="../favicon-64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../favicon-180.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="alternate" type="application/rss+xml" title="Nyx — News &amp; release notes" href="/news/feed.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Nyx" />
+    <meta property="og:title" content="Faster, quieter, and it can run your findings" />
+    <meta
+      property="og:description"
+      content="Zero false positives on the benchmark corpus, faster scans, and a beta dynamic verifier that confirms findings by running them."
+    />
+    <meta property="og:url" content="https://nyxsec.dev/news/nyx-0-8-0" />
+    <meta property="og:image" content="https://nyxsec.dev/og-image.png" />
+    <meta property="article:published_time" content="2026-08-13T00:00:00-04:00" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Faster, quieter, and it can run your findings" />
+    <meta name="twitter:description" content="Release notes for Nyx 0.8.0." />
+    <meta name="twitter:image" content="https://nyxsec.dev/og-image.png" />
+    <meta name="theme-color" content="#F9F8F4" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Faster, quieter, and it can run your findings",
+        "datePublished": "2026-08-13",
+        "dateModified": "2026-08-13",
+        "author": {
+          "@type": "Person",
+          "name": "Eli Peter",
+          "url": "https://github.com/elicpeter"
+        },
+        "publisher": {
+          "@type": "Person",
+          "name": "Eli Peter",
+          "url": "https://github.com/elicpeter"
+        },
+        "url": "https://nyxsec.dev/news/nyx-0-8-0",
+        "description": "Nyx 0.8.0 cuts false positives to zero on the benchmark corpus, speeds up scans, and adds a beta dynamic verifier that re-runs findings in a sandbox."
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "@id": "https://nyxsec.dev/news/nyx-0-8-0#breadcrumbs",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://nyxsec.dev/" },
+          { "@type": "ListItem", "position": 2, "name": "News", "item": "https://nyxsec.dev/news/" },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Faster, quieter, and it can run your findings",
+            "item": "https://nyxsec.dev/news/nyx-0-8-0"
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="container site-header__inner">
+        <a class="brand" href="../" aria-label="Nyx home">
+          <img src="../assets/logo.png" alt="Nyx" class="brand-logo" />
+        </a>
+        <span class="header-wordmark">NYX</span>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="../scanner">Scanner</a>
+          <a href="../agent">Agent</a>
+          <a href="./" aria-current="page">News</a>
+          <a href="../docs/">Docs</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <article>
+        <header class="article-hero">
+          <div class="container article-hero__inner">
+            <a class="article-back-link" href="./">Back to news</a>
+            <h1 class="article-title">Faster, quieter, and it can run your findings.</h1>
+            <div class="article-meta">
+              <span><time datetime="2026-08-13">August 13, 2026</time></span>
+            </div>
+          </div>
+        </header>
+
+        <div class="container">
+          <figure class="article-media">
+            <img src="../assets/news/nyx-0-8-0.png" alt="Nyx 0.8.0 release visual" loading="eager" decoding="async" />
+          </figure>
+        </div>
+
+        <div class="container">
+          <div class="article-body">
+            <h2>Where the time went</h2>
+            <p>
+              Been super busy with work and school, so this release took longer than I wanted. Hoping to have a bit more
+              freedom the next couple months to put into Nyx.
+            </p>
+            <p>
+              Against the previous release on the same 669-case corpus, false positives are down from 43 to 0 and false
+              negatives from 20 to 1. Mostly small things: guards whose failing branch aborts, Rust match guards,
+              <code>execv*</code> argument handling, and a few places where two analyses disagreed about what counts as
+              a source. Scans also got faster, roughly 1.35x on a 492-file Go service, while finding more.
+            </p>
+
+            <h2>The dynamic verifier</h2>
+            <p>
+              The other part of this release is the beta dynamic verifier. It runs by default and re-runs
+              Medium-and-higher findings in a sandbox, stamping a verdict on each, so you can tell a confirmed finding
+              from a guess. Pass <code>--no-verify</code> for a static-only scan.
+            </p>
+            <p>
+              Coverage is uneven and it will report Inconclusive or Unsupported more often than you would like. Feedback
+              on where it falls over helps.
+            </p>
+
+            <p class="article-release-notes">
+              Release Notes for today's update can be found
+              <a href="https://github.com/elicpeter/nyx/releases/tag/v0.8.0">here</a>.
+            </p>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <div class="site-footer__summary">
+          <span class="site-footer__brand">Nyx</span>
+          <p class="site-footer__copy">Nyx is an independent open-source security project.</p>
+        </div>
+        <nav class="site-footer__nav" aria-label="Footer links">
+          <div class="site-footer__group" role="group" aria-labelledby="footer-project">
+            <span id="footer-project" class="site-footer__heading">Project</span>
+            <a href="../">Home</a>
+            <a href="./">News</a>
+            <a href="../docs/">All docs</a>
+            <a href="https://github.com/sponsors/elicpeter">Sponsor</a>
+          </div>
+          <div class="site-footer__group" role="group" aria-labelledby="footer-scanner">
+            <span id="footer-scanner" class="site-footer__heading">Scanner</span>
+            <a href="../scanner">Overview</a>
+            <a href="../docs/nyx/">Docs</a>
+            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
+            <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
+            <a href="https://github.com/elicpeter/nyx/releases">Releases</a>
+            <a href="https://github.com/elicpeter/nyx/blob/master/ROADMAP.md">Roadmap</a>
+            <a href="https://github.com/elicpeter/nyx/blob/master/SECURITY.md">Security</a>
+          </div>
+          <div class="site-footer__group" role="group" aria-labelledby="footer-agent">
+            <span id="footer-agent" class="site-footer__heading">Agent</span>
+            <a href="../agent">Overview</a>
+            <a href="../docs/agent/">Docs</a>
+            <a href="https://github.com/nyx-sec/nyx-agent">GitHub</a>
+            <a href="../agent#support">Support</a>
+          </div>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

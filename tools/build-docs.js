@@ -42,7 +42,7 @@ const DOC_SETS = [
       "Rust security scanner",
       "local-first SAST",
     ],
-    github: "https://github.com/elicpeter/nyx",
+    github: "https://github.com/nyx-sec/nyx",
     softwareId: `${SITE_URL}/scanner#software`,
     productUrl: `${SITE_URL}/scanner`,
     alternateNames: ["Nyx Scanner", "nyx-scanner"],
@@ -119,6 +119,10 @@ const renderer = new marked.Renderer();
 
 renderer.code = function ({ text, lang }) {
   const langClean = (lang || "").trim().split(/\s+/)[0];
+  if (langClean === "mermaid") {
+    return `<pre><code class="language-mermaid">${escapeHtml(text)}</code></pre>\n`;
+  }
+
   let html;
   if (langClean && hljs.getLanguage(langClean)) {
     html = hljs.highlight(text, { language: langClean, ignoreIllegals: true }).value;
@@ -451,7 +455,7 @@ function pageJsonLd({ title, description, canonical, section, parentHref, parent
     },
     founder: { "@id": `${SITE_URL}/#person` },
     sameAs: [
-      "https://github.com/elicpeter/nyx",
+      "https://github.com/nyx-sec/nyx",
       "https://github.com/nyx-sec/nyx-agent",
       "https://github.com/sponsors/elicpeter",
     ],
@@ -696,6 +700,14 @@ function pageTemplate({
   const prevLink = prevHref ? `\n    <link rel="prev" href="${escapeAttr(prevHref)}" />` : "";
   const nextLink = nextHref ? `\n    <link rel="next" href="${escapeAttr(nextHref)}" />` : "";
   const ogType = isIndex ? "website" : "article";
+  const mermaidCss =
+    set && fs.existsSync(path.join(set.sourceDir, "mermaid.css"))
+      ? `\n    <link rel="stylesheet" href="${p}docs/${set.slug}/mermaid.css" />`
+      : "";
+  const mermaidScript =
+    set && fs.existsSync(path.join(set.sourceDir, "mermaid-init.js"))
+      ? `\n    <script defer src="${p}docs/${set.slug}/mermaid-init.js"></script>`
+      : "";
   const jsonLdBlock = jsonLd
     ? `\n    <script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n    </script>`
     : "";
@@ -723,8 +735,8 @@ function pageTemplate({
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="${p}styles.css" />
-    <script defer src="${p}docs/search.js"></script>
+    <link rel="stylesheet" href="${p}styles.css" />${mermaidCss}
+    <script defer src="${p}docs/search.js"></script>${mermaidScript}
 
     <meta property="og:type" content="${ogType}" />
     <meta property="og:site_name" content="Nyx" />
@@ -793,7 +805,7 @@ ${body}
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="${p}scanner">Overview</a>
             <a href="${p}docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>
@@ -853,6 +865,14 @@ function copySearchScript() {
     throw new Error("docs-search.js missing");
   }
   fs.copyFileSync(scriptSrc, path.join(OUT, "search.js"));
+}
+
+function copySetRootFiles(set, files) {
+  for (const file of files) {
+    const src = path.join(set.sourceDir, file);
+    if (!fs.existsSync(src)) continue;
+    fs.copyFileSync(src, path.join(OUT, set.slug, file));
+  }
 }
 
 function runPagefind() {
@@ -973,6 +993,7 @@ function buildDocSet(set) {
 
   writeSetIndex(set, sections, flatPages);
   copyAssets(set);
+  copySetRootFiles(set, ["mermaid.css", "mermaid-init.js"]);
 
   return { set, pageCount: mdFiles.length, sections, flatPages };
 }

@@ -13,7 +13,7 @@
     <link rel="sitemap" type="application/xml" href="https://nyxsec.dev/sitemap.xml" />
     <link rel="alternate" hreflang="en" href="https://nyxsec.dev/docs/agent/architecture" />
     <link rel="alternate" hreflang="x-default" href="https://nyxsec.dev/docs/agent/architecture" />
-    <link rel="prev" href="state-dir" />
+    <link rel="prev" href="product-store" />
     <link rel="next" href="runs" />
     <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32.png" />
     <link rel="icon" type="image/png" sizes="64x64" href="../../favicon-64.png" />
@@ -78,7 +78,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -238,7 +238,7 @@
 
     <main id="main" class="docs-page">
       <div class="docs-shell">
-        <nav class="docs-sidebar" aria-label="Documentation"><a class="docs-sidebar__brand" href="./">Agent docs</a><a class="docs-sidebar__home" href="../">All docs</a><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Get started</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="install">Install</a></li><li><a class="docs-sidebar__link" href="quickstart">Quickstart</a></li><li><a class="docs-sidebar__link" href="cli">CLI</a></li><li><a class="docs-sidebar__link" href="config">Config</a></li><li><a class="docs-sidebar__link" href="state-dir">State Directory</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Architecture</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="architecture" aria-current="page">Architecture</a></li><li><a class="docs-sidebar__link" href="runs">Runs</a></li><li><a class="docs-sidebar__link" href="attack-graph">Attack Graph</a></li><li><a class="docs-sidebar__link" href="business-logic-templates">Business Logic Templates</a></li><li><a class="docs-sidebar__link" href="events">Events</a></li><li><a class="docs-sidebar__link" href="ai-runtime">AI Runtime</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Projects</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="cli#project">CLI: Project</a></li><li><a class="docs-sidebar__link" href="quickstart#create-a-project">Quickstart: Create a Project</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">HTTP API</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="api">API</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Triggers</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="triggers/">Overview</a></li><li><a class="docs-sidebar__link" href="triggers/cron">Cron</a></li><li><a class="docs-sidebar__link" href="triggers/webhook">Webhook</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">CI integration</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="ci/github-actions">GitHub Actions</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Contributor docs</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="dev/sqlx">SQLx</a></li><li><a class="docs-sidebar__link" href="dev/frontend">Frontend</a></li></ul></div></nav>
+        <nav class="docs-sidebar" aria-label="Documentation"><a class="docs-sidebar__brand" href="./">Agent docs</a><a class="docs-sidebar__home" href="../">All docs</a><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Get started</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="install">Install</a></li><li><a class="docs-sidebar__link" href="quickstart">Quickstart</a></li><li><a class="docs-sidebar__link" href="cli">CLI</a></li><li><a class="docs-sidebar__link" href="config">Config</a></li><li><a class="docs-sidebar__link" href="state-dir">State Directory</a></li><li><a class="docs-sidebar__link" href="product-store">Product Store</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Architecture</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="architecture" aria-current="page">Architecture</a></li><li><a class="docs-sidebar__link" href="runs">Runs</a></li><li><a class="docs-sidebar__link" href="attack-graph">Attack Graph</a></li><li><a class="docs-sidebar__link" href="business-logic-templates">Business Logic Templates</a></li><li><a class="docs-sidebar__link" href="events">Events</a></li><li><a class="docs-sidebar__link" href="ai-runtime">AI Runtime</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Projects</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="cli#project">CLI: Project</a></li><li><a class="docs-sidebar__link" href="quickstart#create-a-project">Quickstart: Create a Project</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">HTTP API</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="api">API</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Triggers</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="triggers/">Overview</a></li><li><a class="docs-sidebar__link" href="triggers/cron">Cron</a></li><li><a class="docs-sidebar__link" href="triggers/webhook">Webhook</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">CI integration</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="ci/github-actions">GitHub Actions</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Contributor docs</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="dev/sqlx">SQLx</a></li><li><a class="docs-sidebar__link" href="dev/frontend">Frontend</a></li><li><a class="docs-sidebar__link" href="release">Release</a></li></ul></div></nav>
         <article class="docs-content">
           <div class="docs-search docs-search--content" data-docs-search>
     <label class="visually-hidden" for="docs-search-input">Search docs</label>
@@ -518,9 +518,9 @@ router and event bus serve.</li>
 </ul>
 
           </div>
-          <nav class="docs-prevnext" aria-label="Page navigation"><a class="docs-prevnext__link docs-prevnext__link--prev" href="state-dir">
+          <nav class="docs-prevnext" aria-label="Page navigation"><a class="docs-prevnext__link docs-prevnext__link--prev" href="product-store">
         <span class="docs-prevnext__label">Previous</span>
-        <span class="docs-prevnext__title">State Directory</span>
+        <span class="docs-prevnext__title">Product Store</span>
       </a><a class="docs-prevnext__link docs-prevnext__link--next" href="runs">
         <span class="docs-prevnext__label">Next</span>
         <span class="docs-prevnext__title">Runs</span>
@@ -547,7 +547,7 @@ router and event bus serve.</li>
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>

@@ -78,7 +78,7 @@
         "@id": "https://nyxsec.dev/#person"
       },
       "sameAs": [
-        "https://github.com/elicpeter/nyx",
+        "https://github.com/nyx-sec/nyx",
         "https://github.com/nyx-sec/nyx-agent",
         "https://github.com/sponsors/elicpeter"
       ],
@@ -238,7 +238,7 @@
 
     <main id="main" class="docs-page">
       <div class="docs-shell">
-        <nav class="docs-sidebar" aria-label="Documentation"><a class="docs-sidebar__brand" href="./">Agent docs</a><a class="docs-sidebar__home" href="../">All docs</a><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Get started</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="install">Install</a></li><li><a class="docs-sidebar__link" href="quickstart">Quickstart</a></li><li><a class="docs-sidebar__link" href="cli">CLI</a></li><li><a class="docs-sidebar__link" href="config" aria-current="page">Config</a></li><li><a class="docs-sidebar__link" href="state-dir">State Directory</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Architecture</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="architecture">Architecture</a></li><li><a class="docs-sidebar__link" href="runs">Runs</a></li><li><a class="docs-sidebar__link" href="attack-graph">Attack Graph</a></li><li><a class="docs-sidebar__link" href="business-logic-templates">Business Logic Templates</a></li><li><a class="docs-sidebar__link" href="events">Events</a></li><li><a class="docs-sidebar__link" href="ai-runtime">AI Runtime</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Projects</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="cli#project">CLI: Project</a></li><li><a class="docs-sidebar__link" href="quickstart#create-a-project">Quickstart: Create a Project</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">HTTP API</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="api">API</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Triggers</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="triggers/">Overview</a></li><li><a class="docs-sidebar__link" href="triggers/cron">Cron</a></li><li><a class="docs-sidebar__link" href="triggers/webhook">Webhook</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">CI integration</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="ci/github-actions">GitHub Actions</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Contributor docs</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="dev/sqlx">SQLx</a></li><li><a class="docs-sidebar__link" href="dev/frontend">Frontend</a></li></ul></div></nav>
+        <nav class="docs-sidebar" aria-label="Documentation"><a class="docs-sidebar__brand" href="./">Agent docs</a><a class="docs-sidebar__home" href="../">All docs</a><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Get started</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="install">Install</a></li><li><a class="docs-sidebar__link" href="quickstart">Quickstart</a></li><li><a class="docs-sidebar__link" href="cli">CLI</a></li><li><a class="docs-sidebar__link" href="config" aria-current="page">Config</a></li><li><a class="docs-sidebar__link" href="state-dir">State Directory</a></li><li><a class="docs-sidebar__link" href="product-store">Product Store</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Architecture</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="architecture">Architecture</a></li><li><a class="docs-sidebar__link" href="runs">Runs</a></li><li><a class="docs-sidebar__link" href="attack-graph">Attack Graph</a></li><li><a class="docs-sidebar__link" href="business-logic-templates">Business Logic Templates</a></li><li><a class="docs-sidebar__link" href="events">Events</a></li><li><a class="docs-sidebar__link" href="ai-runtime">AI Runtime</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Projects</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="cli#project">CLI: Project</a></li><li><a class="docs-sidebar__link" href="quickstart#create-a-project">Quickstart: Create a Project</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">HTTP API</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="api">API</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Triggers</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="triggers/">Overview</a></li><li><a class="docs-sidebar__link" href="triggers/cron">Cron</a></li><li><a class="docs-sidebar__link" href="triggers/webhook">Webhook</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">CI integration</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="ci/github-actions">GitHub Actions</a></li></ul></div><div class="docs-sidebar__group"><h2 class="docs-sidebar__heading">Contributor docs</h2><ul class="docs-sidebar__list"><li><a class="docs-sidebar__link" href="dev/sqlx">SQLx</a></li><li><a class="docs-sidebar__link" href="dev/frontend">Frontend</a></li><li><a class="docs-sidebar__link" href="release">Release</a></li></ul></div></nav>
         <article class="docs-content">
           <div class="docs-search docs-search--content" data-docs-search>
     <label class="visually-hidden" for="docs-search-input">Search docs</label>
@@ -472,6 +472,18 @@ fails the load rather than silently going to default.</p>
 <td>string (optional)</td>
 <td>unset</td>
 <td>Model identifier (e.g. <code>claude-opus-4-7</code>).</td>
+</tr>
+<tr>
+<td><code>effort</code></td>
+<td>string (optional)</td>
+<td>unset</td>
+<td>CLI-backed runtime reasoning effort (<code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>; Claude Code also accepts <code>max</code>).</td>
+</tr>
+<tr>
+<td><code>context_window</code></td>
+<td>u32 (optional)</td>
+<td>unset</td>
+<td>CLI-backed runtime context-window hint in tokens. <code>1_000_000</code> requests Claude Code 1M aliases and Codex 1M context when available.</td>
 </tr>
 <tr>
 <td><code>api_base</code></td>
@@ -1350,7 +1362,7 @@ filter.</p>
             <span id="footer-scanner" class="site-footer__heading">Scanner</span>
             <a href="../../scanner">Overview</a>
             <a href="../../docs/nyx/">Docs</a>
-            <a href="https://github.com/elicpeter/nyx">GitHub</a>
+            <a href="https://github.com/nyx-sec/nyx">GitHub</a>
             <a href="https://crates.io/crates/nyx-scanner">crates.io</a>
             <a href="https://docs.rs/nyx-scanner/latest/nyx_scanner/">Rustdocs</a>
           </div>
