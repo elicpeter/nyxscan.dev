@@ -26,21 +26,21 @@
     <pubDate>Tue, 26 May 2026 00:00:00 -0500</pubDate>
 
     <item>
-      <title>Nyx Agent is live</title>
-      <link>https://nyxsec.dev/news/nyx-agent</link>
-      <guid isPermaLink="true">https://nyxsec.dev/news/nyx-agent</guid>
-      <pubDate>Tue, 26 May 2026 00:00:00 -0500</pubDate>
-      <dc:creator>Eli Peter</dc:creator>
-      <description>Nyx Agent runs local pentests against development apps. Install it with cargo install nyx-agent, then keep repo context, live checks, and proof together.</description>
-    </item>
-
-    <item>
       <title>Faster, quieter, and it can run your findings</title>
       <link>https://nyxsec.dev/news/nyx-0-8-0</link>
       <guid isPermaLink="true">https://nyxsec.dev/news/nyx-0-8-0</guid>
       <pubDate>Thu, 13 Aug 2026 00:00:00 -0400</pubDate>
       <dc:creator>Eli Peter</dc:creator>
       <description>Nyx 0.8.0 cuts false positives to zero on the benchmark corpus, speeds up scans, and adds a beta dynamic verifier that re-runs findings in a sandbox.</description>
+    </item>
+
+    <item>
+      <title>Nyx Agent is live</title>
+      <link>https://nyxsec.dev/news/nyx-agent</link>
+      <guid isPermaLink="true">https://nyxsec.dev/news/nyx-agent</guid>
+      <pubDate>Tue, 26 May 2026 00:00:00 -0500</pubDate>
+      <dc:creator>Eli Peter</dc:creator>
+      <description>Nyx Agent runs local pentests against development apps. Install it with cargo install nyx-agent, then keep repo context, live checks, and proof together.</description>
     </item>
 
     <item>

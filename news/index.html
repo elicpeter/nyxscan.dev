@@ -125,21 +125,6 @@
             "blogPost": [
               {
                 "@type": "BlogPosting",
-                "@id": "https://nyxsec.dev/news/nyx-agent#post",
-                "headline": "Nyx Agent is live",
-                "description": "Nyx Agent runs local pentests against development apps. It reads the repo, checks the local target, and keeps proof with the run.",
-                "url": "https://nyxsec.dev/news/nyx-agent",
-                "mainEntityOfPage": "https://nyxsec.dev/news/nyx-agent",
-                "datePublished": "2026-05-26",
-                "dateModified": "2026-05-26",
-                "inLanguage": "en-US",
-                "image": "https://nyxsec.dev/og-image.png",
-                "author": { "@id": "https://nyxsec.dev/#person" },
-                "publisher": { "@id": "https://nyxsec.dev/#organization" },
-                "keywords": "Nyx Agent, local pentesting, live verification, evidence"
-              },
-              {
-                "@type": "BlogPosting",
                 "@id": "https://nyxsec.dev/news/nyx-0-8-0#post",
                 "headline": "Faster, quieter, and it can run your findings",
                 "description": "Nyx 0.8.0 cuts false positives to zero on the benchmark corpus, speeds up scans, and adds a beta dynamic verifier that re-runs findings in a sandbox.",
@@ -152,6 +137,21 @@
                 "author": { "@id": "https://nyxsec.dev/#person" },
                 "publisher": { "@id": "https://nyxsec.dev/#organization" },
                 "keywords": "Nyx 0.8.0, dynamic verification, false positives, performance, SAST"
+              },
+              {
+                "@type": "BlogPosting",
+                "@id": "https://nyxsec.dev/news/nyx-agent#post",
+                "headline": "Nyx Agent is live",
+                "description": "Nyx Agent runs local pentests against development apps. It reads the repo, checks the local target, and keeps proof with the run.",
+                "url": "https://nyxsec.dev/news/nyx-agent",
+                "mainEntityOfPage": "https://nyxsec.dev/news/nyx-agent",
+                "datePublished": "2026-05-26",
+                "dateModified": "2026-05-26",
+                "inLanguage": "en-US",
+                "image": "https://nyxsec.dev/og-image.png",
+                "author": { "@id": "https://nyxsec.dev/#person" },
+                "publisher": { "@id": "https://nyxsec.dev/#organization" },
+                "keywords": "Nyx Agent, local pentesting, live verification, evidence"
               },
               {
                 "@type": "BlogPosting",
@@ -288,6 +288,21 @@
       <div class="container news-shell">
         <section class="news-feed" aria-label="News articles">
           <article class="news-feed-item">
+            <a class="news-feed-item__media" href="nyx-0-8-0" aria-label="Read Nyx 0.8.0 release news">
+              <img src="../assets/news/nyx-0-8-0.png" alt="Nyx 0.8.0 release visual" loading="eager" decoding="async" />
+            </a>
+            <div class="news-feed-item__copy">
+              <time class="news-feed-item__date" datetime="2026-08-13">August 13, 2026</time>
+              <h2><a href="nyx-0-8-0">Faster, quieter, and it can run your findings.</a></h2>
+              <p>
+                False positives are down from 43 to 0 and false negatives from 20 to 1 on the 669-case corpus, scans are
+                roughly 1.35x faster, and a beta dynamic verifier now re-runs Medium-and-higher findings in a sandbox so
+                you can tell a confirmed finding from a guess.
+              </p>
+            </div>
+          </article>
+
+          <article class="news-feed-item">
             <a
               class="news-feed-item__media news-feed-item__media--logo"
               href="nyx-agent"
@@ -303,21 +318,6 @@
                 live checks, and proof together.
               </p>
               <a class="news-read-more" href="nyx-agent">Read more</a>
-            </div>
-          </article>
-
-          <article class="news-feed-item">
-            <a class="news-feed-item__media" href="nyx-0-8-0" aria-label="Read Nyx 0.8.0 release news">
-              <img src="../assets/news/nyx-0-8-0.png" alt="Nyx 0.8.0 release visual" loading="eager" decoding="async" />
-            </a>
-            <div class="news-feed-item__copy">
-              <time class="news-feed-item__date" datetime="2026-08-13">August 13, 2026</time>
-              <h2><a href="nyx-0-8-0">Faster, quieter, and it can run your findings.</a></h2>
-              <p>
-                False positives are down from 43 to 0 and false negatives from 20 to 1 on the 669-case corpus, scans are
-                roughly 1.35x faster, and a beta dynamic verifier now re-runs Medium-and-higher findings in a sandbox so
-                you can tell a confirmed finding from a guess.
-              </p>
             </div>
           </article>
 
